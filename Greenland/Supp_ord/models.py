@@ -15,12 +15,13 @@ class Players(models.Model):
 
 class Catalog(models.Model):
     catalog_id = models.AutoField(primary_key=True)
-    catalog = models.CharField(max_length=45)
-    parent_id = models.ForeignKey('catalog', models.CASCADE)
+    catalog_name = models.CharField(max_length=45)
+    parent = models.ForeignKey('Catalog', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'catalog'
 
-
+    def __str__(self):
+        return f'id={self.catalog_id}, {self.catalog_name}, Родитель_{self.parent}'
 
