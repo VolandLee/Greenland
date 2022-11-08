@@ -1,17 +1,68 @@
 from django.db import models
-
+from .regexp import *
+import re
+from importlib import reload
+import datetime
+from django.db.models.query import QuerySet
 # Create your models here.
 """
-class Players(models.Model):
-    player_id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=16)
-    last_name = models.CharField(max_length=16)
-    country = models.CharField(max_length=16, blank=True, null=True)
-    city = models.CharField(max_length=16, blank=True, null=True)
-    date_of_birth = models.DateField(blank=True, null=True)
-    business = models.CharField(max_length=16, blank=True, null=True)
-    about = models.TextField(blank=True, null=True)
+
+
+
+class ClientsManager(models.Manager):
+    def add_client(self, FName, LName, Patronymic, email, password, phone, postcode, region_id, city_id, street, h_number, gender, birth_date, balance, liked):
+        if re.fullmatch(reFIO, f'{FName} {LName} {Patronymic} ') and re.search(reemail, email):
+            Clients.objects.create(FName=FName, LName=LName, Patronymic=Patronymic, email=email, password=password, phone=phone, postcode=postcode,
+                             region_id=region_id,
+                             city_id=city_id, street=street, h_number=h_number, gender=gender,
+                             birth_date=birth_date,
+                             balance=balance, liked=liked)
+            return('Клиент добавлен1')
+        else:
+            raise ValueError('Клиент не добавлен. Пожадуйста введите корректные данные')
 """
+
+
+class Clients(models.Model):
+    client_id = models.AutoField(primary_key=True)
+    FName = models.CharField(max_length=45)
+    LName = models.CharField(max_length=45)
+    Patronymic = models.CharField(max_length=45)
+    email = models.EmailField()
+    password = models.CharField(max_length=45)
+    phone = models.BigIntegerField()
+    postcode = models.IntegerField()
+    region = models.ForeignKey('Region', models.DO_NOTHING, null=True)
+    city = models.ForeignKey('City', models.DO_NOTHING, null=True)
+    street = models.CharField(max_length=45)
+    h_number = models.IntegerField()
+    gender = models.BooleanField()
+    birth_date = models.DateField()
+    balance = models.DecimalField(max_digits=10, decimal_places=2)
+    liked = models.JSONField(blank=True, null=True)
+
+
+
+
+    class Meta:
+        managed = False
+        db_table = 'clients'
+    def __str__(self):
+        return f'id={self.client_id}, {self.FName}, {self.LName}'
+
+    objects = models.Manager()
+
+    @staticmethod
+    def add_client(FName, LName, Patronymic, email, password, phone, postcode, region_id, city_id, street, h_number, gender, birth_date, balance, liked=[]):
+        if re.fullmatch(reFIO, f'{FName} {LName} {Patronymic} ') and re.search(reemail, email):
+            models.Manager.objects.create(FName=FName, LName=LName, Patronymic=Patronymic, email=email, password=password, phone=phone, postcode=postcode,
+                             region_id=region_id,
+                             city_id=city_id, street=street, h_number=h_number, gender=gender,
+                             birth_date=birth_date,
+                             balance=balance, liked=liked)
+            return('Клиент добавлен')
+        else:
+            raise ValueError('Клиент не добавлен. Пожадуйста введите корректные данные')
 
 class Catalog(models.Model):
     catalog_id = models.AutoField(primary_key=True)
@@ -24,7 +75,6 @@ class Catalog(models.Model):
 
     def __str__(self):
         return f'id={self.catalog_id}, {self.catalog_name}, Родитель_{self.parent}'
-
 
 class Premise_type(models.Model):
     premise_type_id = models.AutoField(primary_key=True)
@@ -63,30 +113,7 @@ class Region(models.Model):
     def __str__(self):
         return f'id={self.region_id}, {self.region_name}'
 
-class Clients(models.Model):
-    client_id = models.AutoField(primary_key=True)
-    FName = models.CharField(max_length=45)
-    LName = models.CharField(max_length=45)
-    Patronymic = models.CharField(max_length=45)
-    email = models.CharField(max_length=45)
-    password = models.CharField(max_length=45)
-    phone = models.BigIntegerField
-    postcode = models.IntegerField()
-    region = models.ForeignKey('Region', models.DO_NOTHING, null=True)
-    city = models.ForeignKey('City', models.DO_NOTHING, null=True)
-    street = models.CharField(max_length=45)
-    h_number = models.IntegerField()
-    gender = models.BooleanField()
-    birth_date = models.DateField()
-    balance = models.DecimalField(max_digits=10, decimal_places=2)
-    liked = models.JSONField(blank=True, null=True)
 
-
-    class Meta:
-        managed = False
-        db_table = 'clients'
-    def __str__(self):
-        return f'id={self.client_id}, {self.FName}, {self.LName}'
 
 
 class Premises(models.Model):
@@ -94,7 +121,7 @@ class Premises(models.Model):
     premise_type = models.ForeignKey('Premise_type', models.DO_NOTHING, null=True)
     coord_long = models.FloatField()
     coord_lat = models.FloatField()
-    email = models.CharField(max_length=45)
+    email = models.EmailField()
     phone = models.BigIntegerField
     postcode = models.IntegerField()
     region = models.ForeignKey('Region', models.DO_NOTHING, null=True)
@@ -107,7 +134,7 @@ class Premises(models.Model):
         managed = False
         db_table = 'premises'
     def __str__(self):
-        return f'id={self.premise_id}, {self.premise_type_id}, {self.region}, {self.city}'
+        return f'id={self.premise_id}, {self.premise_type}, {self.region}, {self.city}'
 
 
 class Employees(models.Model):
@@ -116,9 +143,9 @@ class Employees(models.Model):
     FName = models.CharField(max_length=45)
     LName = models.CharField(max_length=45)
     Patronymic = models.CharField(max_length=45)
-    email = models.CharField(max_length=45)
+    email = models.EmailField()
     password = models.CharField(max_length=45)
-    phone = models.BigIntegerField
+    phone = models.BigIntegerField()
     postcode = models.IntegerField()
     region = models.ForeignKey('Region', models.DO_NOTHING, null=True)
     city = models.ForeignKey('City', models.DO_NOTHING, null=True)
@@ -130,12 +157,28 @@ class Employees(models.Model):
     chief = models.ForeignKey('Catalog', models.DO_NOTHING, blank=True, null=True)
 
 
+
     class Meta:
         managed = False
         db_table = 'employees'
     def __str__(self):
         return f'id={self.employee_id}, {self.FName}, {self.LName}'
 
+    objects = models.Manager()
+
+    @staticmethod
+    def add_employee(premise_id, FName, LName, Patronymic, email, password, phone, postcode, region_id, city_id, street,
+                    h_number, gender, birth_date, hire_date, *args):
+        if re.fullmatch(reFIO, f'{FName} {LName} {Patronymic} ') and re.search(reemail, email):
+            models.Manager.objects.create(premise_id=premise_id, FName=FName, LName=LName, Patronymic=Patronymic, email=email, password=password,
+                               phone=phone, postcode=postcode,
+                               region_id=region_id,
+                               city_id=city_id, street=street, h_number=h_number, gender=gender,
+                               birth_date=birth_date,
+                               hire_date=hire_date, *args)
+            return ('Работник добавлен')
+        else:
+            raise ValueError('Работник не добавлен. Пожадуйста введите корректные данные')
 
 
 class Clients_order(models.Model):
@@ -174,20 +217,35 @@ class Control_points(models.Model):
 class Delivery(models.Model):
     delivery_id = models.AutoField(primary_key = True)
     delivery_name = models.CharField(max_length=45)
-    email = models.CharField(max_length=45)
-    phone = models.BigIntegerField
+    email = models.EmailField()
+    phone = models.BigIntegerField()
     postcode = models.IntegerField()
     region = models.ForeignKey('Region', models.DO_NOTHING, null=True)
     city = models.ForeignKey('City', models.DO_NOTHING, null=True)
     street = models.CharField(max_length=45)
     h_number = models.IntegerField()
-    website = models.CharField(max_length=45)
+    website = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'delivery'
     def __str__(self):
         return f'id={self.delivery_id}, {self.delivery_id}'
+
+
+    objects = models.Manager()
+    @staticmethod
+    def add_delivery(delivery_name, email, phone, postcode, region_id, city_id, street,
+                     h_number, *args):
+        if re.search(reemail, email):
+            Delivery.objects.create(delivery_name=delivery_name,
+                                          email=email,
+                                          phone=phone, postcode=postcode,
+                                          region_id=region_id,
+                                          city_id=city_id, street=street, h_number=h_number, *args)
+            return ('Служба доставки добавлена')
+        else:
+            raise ValueError('Служба доставки не добавлена. Пожадуйста введите корректные данные')
 
 
 class Goodslist(models.Model):
@@ -200,6 +258,7 @@ class Goodslist(models.Model):
     sizez = models.IntegerField()
     weight = models.DecimalField(max_digits=8, decimal_places=3)
 
+    objects = models.Manager()
 
     class Meta:
         managed = False
@@ -207,6 +266,11 @@ class Goodslist(models.Model):
     def __str__(self):
         return f'id={self.goodslist_id}, {self.barcode}, {self.quantity}'
 
+
+    @staticmethod
+    def add_goodslist(barcode_id, premise_id, quantity, sizex, sizey, sizez, weight):
+        Goodslist.objects.create(barcode_id=barcode_id, premise_id=premise_id, quantity=quantity,
+                                 sizex=sizex, sizey=sizey, sizez=sizez, weight=weight)
 
 class Products(models.Model):
     barcode_id = models.BigIntegerField(primary_key=True)
@@ -224,7 +288,15 @@ class Products(models.Model):
     def __str__(self):
         return f'id={self.barcode_id}, {self.product_name}, Категория:{self.catalog}'
 
-
+    objects = models.Manager()
+    @classmethod
+    def add_products(cls, barcode_id, catalog_id, supplier_id, product_name, supplier_price, client_price, country, available):
+        try:
+            cls.objects.create(barcode_id=barcode_id, catalog_id=catalog_id, supplier_id=supplier_id, product_name=product_name, supplier_price=supplier_price,
+                               client_price=client_price, country=country, available=available)
+            print('Продукт добавлен')
+        except Exception:
+            print('Продукт не добавлен. Пожадуйста введите корректные данные')
 
 class Supplier_order(models.Model):
     supplier_order_id = models.AutoField(primary_key = True)
@@ -233,9 +305,10 @@ class Supplier_order(models.Model):
     supplier_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     order_date = models.DateTimeField()
-    delivery_date = models.DateTimeField()
-    recieved_date = models.DateTimeField()
+    delivery_date = models.DateTimeField(blank=True, null=True)
+    received_date = models.DateTimeField(blank=True, null=True)
 
+    objects = models.Manager()
 
     class Meta:
         managed = False
@@ -244,12 +317,18 @@ class Supplier_order(models.Model):
         return f'id={self.supplier_order_id}, {self.barcode}, {self.supplier_price}, {self.order_date}'
 
 
+    @staticmethod
+    def add_supplier_order(supplier_id, barcode_id, supplier_price, quantity):
+        Supplier_order.objects.create(supplier_id=supplier_id, barcode_id=barcode_id,
+                                      supplier_price=supplier_price, quantity=quantity,
+                                      order_date=datetime.datetime.now())
+
 
 class Suppliers(models.Model):
     supplier_id = models.AutoField(primary_key = True)
     supplier_name = models.CharField(max_length=45)
-    email = models.CharField(max_length=45)
-    phone = models.BigIntegerField
+    email = models.EmailField()
+    phone = models.BigIntegerField()
     postcode = models.IntegerField()
     region = models.ForeignKey('Region', models.DO_NOTHING, null=True)
     city = models.ForeignKey('City', models.DO_NOTHING, null=True)
@@ -257,6 +336,7 @@ class Suppliers(models.Model):
     h_number = models.IntegerField()
     website = models.CharField(max_length=45, blank=True, null=True)
 
+    objects = models.Manager()
     class Meta:
         managed = False
         db_table = 'suppliers'
@@ -268,22 +348,34 @@ class Transfers(models.Model):
     transfer_id = models.AutoField(primary_key = True)
     delivery = models.ForeignKey('Delivery', models.DO_NOTHING, null=True)
     barcode = models.ForeignKey('Products', models.DO_NOTHING, null=True)
-    from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise',  null=True)
-    to_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='to_premise',  null=True)
+    from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise',  blank=True, null=True)
+    to_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='to_premise')
     start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
     quantity = models.IntegerField()
     sizex = models.IntegerField()
     sizey = models.IntegerField()
     sizez = models.IntegerField()
     weight = models.DecimalField(max_digits=8, decimal_places=3)
 
+    objects = models.Manager()
 
     class Meta:
         managed = False
         db_table = 'transfers'
     def __str__(self):
         return f'id={self.transfer_id}, {self.delivery}, {self.barcode}'
+
+
+    @classmethod
+    def add_transfer(cls, delivery_id, barcode_id, from_premise_id, to_premise_id, start_date, quantity, sizex, sizey, sizez, weight, *args):
+        cls.objects.create(delivery_id=delivery_id, barcode_id=barcode_id, from_premise_id=from_premise_id, to_premise_id=to_premise_id, start_date=start_date,
+                               quantity=quantity,
+                               sizex=sizex, sizey=sizey, sizez=sizez, weight=weight, *args)
+
+
+
+
 
 
 class Actions(models.Model):

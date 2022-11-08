@@ -221,7 +221,7 @@ CREATE TABLE `catalog` (
   `parent_id` int DEFAULT NULL,
   PRIMARY KEY (`catalog_id`),
   KEY `catalog_fk_idx` (`parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -230,7 +230,7 @@ CREATE TABLE `catalog` (
 
 LOCK TABLES `catalog` WRITE;
 /*!40000 ALTER TABLE `catalog` DISABLE KEYS */;
-INSERT INTO `catalog` VALUES (1,'Одежда',NULL),(2,'Обувь',1);
+INSERT INTO `catalog` VALUES (1,'Одежда',NULL),(2,'Обувь',1),(3,'hhh',1);
 /*!40000 ALTER TABLE `catalog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -285,7 +285,7 @@ CREATE TABLE `clients` (
   PRIMARY KEY (`client_id`),
   CONSTRAINT `clients_chk_1` CHECK (((`phone` >= 70000000000) and (`phone` < 80000000000))),
   CONSTRAINT `clients_chk_2` CHECK (((`postcode` >= 100000) and (`postcode` < 1000000)))
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -294,7 +294,7 @@ CREATE TABLE `clients` (
 
 LOCK TABLES `clients` WRITE;
 /*!40000 ALTER TABLE `clients` DISABLE KEYS */;
-INSERT INTO `clients` VALUES (1,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24',0.00,NULL),(2,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24',2500.65,NULL);
+INSERT INTO `clients` VALUES (1,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24',0.00,NULL),(2,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24',2500.65,NULL),(3,'Вл','Вл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(4,'Вл','fВл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(5,'dcdcdc','dddfdfdf','fdfdfdffd','fdfdfdfddf','fdfdfdfdfd',79667163270,211222,4,5,'212213',32,1,'2022-11-04',333222.00,NULL),(6,'Вл','fВл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(7,'Вл','fВл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(8,'Вл','fВл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(9,'Вл','fВл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(10,'Вл','fВл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(11,'Вл','fВл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(12,'Вл','fВл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(13,'fvfvvf','vfvfvfvf','vfvfvfvv','fvfvfvfv','fvfvfvf',79667163270,434434,2,4,'wqereere',33,1,'2022-11-04',21234.00,NULL),(14,'Вл','fВл','Вл','cdc','ddcdcd',79667163270,623400,2,3,'cdcc',33,1,'2002-04-24',999.00,'[]'),(15,'cdd','ddd','fdfdf','fdfdfdfdf','dfdfdfdfd',79667163270,265894,3,4,'вцввцвцв',323,1,'2022-11-04',3232323.00,NULL),(16,'Ва','Вп','Вр','43fdf','ffddvf',79667163270,323232,5,5,'434vfvfv',44,1,'2002-04-24',4343.00,'[]'),(17,'Ва','Вп','Вр','@43fdf','ffddvf',79667163270,323232,5,5,'434vfvfv',44,1,'2002-04-24',4343.00,'[]'),(18,'Ва','Вп','Вр','@43fdf','ffd@dvf',79667163270,323232,5,5,'434vfvfv',44,1,'2002-04-24',4343.00,'[]'),(19,'Ва','Вп','Вр','43f@df','ffddvf',79667163270,323232,5,5,'434vfvfv',44,1,'2002-04-24',4343.00,'[]');
 /*!40000 ALTER TABLE `clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -388,7 +388,7 @@ CREATE TABLE `delivery` (
   PRIMARY KEY (`delivery_id`),
   CONSTRAINT `delivery_chk_1` CHECK (((`phone` >= 70000000000) and (`phone` < 80000000000))),
   CONSTRAINT `delivery_chk_2` CHECK (((`postcode` >= 100000) and (`postcode` < 1000000)))
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -397,7 +397,7 @@ CREATE TABLE `delivery` (
 
 LOCK TABLES `delivery` WRITE;
 /*!40000 ALTER TABLE `delivery` DISABLE KEYS */;
-INSERT INTO `delivery` VALUES (1,'Greenland','delivery@greenland.ru',79530507315,432214,23,34,'Ленин-гриб',32,NULL);
+INSERT INTO `delivery` VALUES (1,'Greenland','delivery@greenland.ru',79530507315,432214,23,34,'Ленин-гриб',32,NULL),(2,'Ва@43fdf','ffd@dvf',79667163270,323232,5,5,'434vfvfv',44,NULL);
 /*!40000 ALTER TABLE `delivery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -423,7 +423,7 @@ CREATE TABLE `django_admin_log` (
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -432,7 +432,7 @@ CREATE TABLE `django_admin_log` (
 
 LOCK TABLES `django_admin_log` WRITE;
 /*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
-INSERT INTO `django_admin_log` VALUES (1,'2022-10-30 18:00:53.973672','2','Catalog object (2)',1,'[{\"added\": {}}]',7,1),(2,'2022-10-30 18:01:11.470815','2','Catalog object (2)',2,'[{\"changed\": {\"fields\": [\"Catalog name\", \"Parent\"]}}]',7,1),(3,'2022-11-03 06:29:52.578362','191','id=191, Error',1,'[{\"added\": {}}]',8,1),(4,'2022-11-03 06:29:59.214797','192','id=192, Error',1,'[{\"added\": {}}]',8,1),(5,'2022-11-03 07:43:49.071247','2','id=2, Владимир, Вознюк',2,'[]',9,1),(6,'2022-11-03 07:43:54.033580','2','id=2, Владимир, Вознюк',2,'[]',9,1),(7,'2022-11-03 08:09:59.799037','3','id=3, vvvv',1,'[{\"added\": {}}]',12,1),(8,'2022-11-03 11:16:17.465179','5454545454545','id=5454545454545, khjbh, Категория:id=1, Одежда, Родитель_None',1,'[{\"added\": {}}]',20,1),(9,'2022-11-03 11:16:25.036506','1','id=1, id=1, Владимир, Вознюк, id=5454545454545, khjbh, Категория:id=1, Одежда, Родитель_None, 2022-11-03 11:14:33+00:00',1,'[{\"added\": {}}]',16,1),(10,'2022-11-03 11:17:17.401719','1','id=1, id=5454545454545, khjbh, Категория:id=1, Одежда, Родитель_None, 65',1,'[{\"added\": {}}]',19,1);
+INSERT INTO `django_admin_log` VALUES (1,'2022-10-30 18:00:53.973672','2','Catalog object (2)',1,'[{\"added\": {}}]',7,1),(2,'2022-10-30 18:01:11.470815','2','Catalog object (2)',2,'[{\"changed\": {\"fields\": [\"Catalog name\", \"Parent\"]}}]',7,1),(3,'2022-11-03 06:29:52.578362','191','id=191, Error',1,'[{\"added\": {}}]',8,1),(4,'2022-11-03 06:29:59.214797','192','id=192, Error',1,'[{\"added\": {}}]',8,1),(5,'2022-11-03 07:43:49.071247','2','id=2, Владимир, Вознюк',2,'[]',9,1),(6,'2022-11-03 07:43:54.033580','2','id=2, Владимир, Вознюк',2,'[]',9,1),(7,'2022-11-03 08:09:59.799037','3','id=3, vvvv',1,'[{\"added\": {}}]',12,1),(8,'2022-11-03 11:16:17.465179','5454545454545','id=5454545454545, khjbh, Категория:id=1, Одежда, Родитель_None',1,'[{\"added\": {}}]',20,1),(9,'2022-11-03 11:16:25.036506','1','id=1, id=1, Владимир, Вознюк, id=5454545454545, khjbh, Категория:id=1, Одежда, Родитель_None, 2022-11-03 11:14:33+00:00',1,'[{\"added\": {}}]',16,1),(10,'2022-11-03 11:17:17.401719','1','id=1, id=5454545454545, khjbh, Категория:id=1, Одежда, Родитель_None, 65',1,'[{\"added\": {}}]',19,1),(11,'2022-11-04 13:05:38.192850','5','id=5, dcdcdc, dddfdfdf',1,'[{\"added\": {}}]',9,1),(12,'2022-11-04 13:10:03.375253','5','id=5, dcdcdc, dddfdfdf',2,'[]',9,1),(13,'2022-11-04 13:29:54.425613','13','id=13, fvfvvf, vfvfvfvf',1,'[{\"added\": {}}]',9,1),(14,'2022-11-04 14:13:48.478519','15','id=15, cdd, ddd',1,'[{\"added\": {}}]',9,1),(15,'2022-11-06 12:23:09.871386','3','id=3, hhh, Родитель_id=1, Одежда, Родитель_None',1,'[{\"added\": {}}]',7,1);
 /*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -546,7 +546,7 @@ CREATE TABLE `employees` (
   CONSTRAINT `premise_id_e_fk` FOREIGN KEY (`premise_id`) REFERENCES `premises` (`premise_id`),
   CONSTRAINT `employees_chk_1` CHECK (((`phone` >= 70000000000) and (`phone` < 80000000000))),
   CONSTRAINT `employees_chk_2` CHECK (((`postcode` >= 100000) and (`postcode` < 1000000)))
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -555,7 +555,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-INSERT INTO `employees` VALUES (10,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629844,2,34,'Окт',1132,0,'2002-04-24','2022-10-26',NULL),(11,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,0,'2002-04-24','2022-10-26',NULL),(12,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL),(13,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL),(14,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL),(15,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL),(16,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',11),(17,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL);
+INSERT INTO `employees` VALUES (10,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629844,2,34,'Окт',1132,0,'2002-04-24','2022-10-26',NULL),(11,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,0,'2002-04-24','2022-10-26',NULL),(12,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL),(13,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL),(14,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL),(15,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL),(16,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',11),(17,7,'Владимир','Вознюк','Владимирович','whererhisplace@gmail.com','Easybd322',79667163270,629884,2,34,'Окт',1132,1,'2002-04-24','2022-10-26',NULL),(20,8,'Ва','Вп','Вр','@43fdf','ffd@dvf',79667163270,323232,5,5,'434vfvfv',44,1,'2002-04-24','2002-04-24',NULL);
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -589,7 +589,7 @@ CREATE TABLE `goodslist` (
 
 LOCK TABLES `goodslist` WRITE;
 /*!40000 ALTER TABLE `goodslist` DISABLE KEYS */;
-INSERT INTO `goodslist` VALUES (1,5454545454545,7,65,5,4,88,8888.880);
+INSERT INTO `goodslist` VALUES (1,5454545454545,7,26,5,4,88,8888.880);
 /*!40000 ALTER TABLE `goodslist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -684,7 +684,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (5454545454545,1,1,'khjbh',55.55,66.66,'Omerica',1);
+INSERT INTO `products` VALUES (5454545454545,1,1,'khjbh',55.55,66.66,'Omerica',1),(6483475864345,3,1,'79667163270',323232.00,5.00,'5',0),(6483475866345,3,1,'79667163270',323232.00,5.00,'5',0),(6483475866346,3,1,'79667163270',323232.00,5.00,'5',0);
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -724,7 +724,7 @@ CREATE TABLE `supplier_order` (
   `supplier_id` int NOT NULL,
   `barcode_id` bigint NOT NULL,
   `supplier_price` decimal(10,2) NOT NULL,
-  `quanity` int NOT NULL,
+  `quantity` int NOT NULL,
   `order_date` timestamp NOT NULL,
   `delivery_date` timestamp NULL DEFAULT NULL,
   `received_date` timestamp NULL DEFAULT NULL,
@@ -733,7 +733,7 @@ CREATE TABLE `supplier_order` (
   KEY `barcode_fk_so_idx` (`barcode_id`),
   CONSTRAINT `barcode_fk_so` FOREIGN KEY (`barcode_id`) REFERENCES `products` (`barcode_id`),
   CONSTRAINT `supplier_fk` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`supplier_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -742,6 +742,7 @@ CREATE TABLE `supplier_order` (
 
 LOCK TABLES `supplier_order` WRITE;
 /*!40000 ALTER TABLE `supplier_order` DISABLE KEYS */;
+INSERT INTO `supplier_order` VALUES (1,1,5454545454545,3444.00,5,'2022-11-07 08:46:21',NULL,NULL);
 /*!40000 ALTER TABLE `supplier_order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -766,7 +767,7 @@ CREATE TABLE `suppliers` (
   PRIMARY KEY (`supplier_id`),
   CONSTRAINT `suppliers_chk_1` CHECK (((`phone` >= 70000000000) and (`phone` < 80000000000))),
   CONSTRAINT `suppliers_chk_2` CHECK (((`postcode` >= 100000) and (`postcode` < 1000000)))
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -775,7 +776,7 @@ CREATE TABLE `suppliers` (
 
 LOCK TABLES `suppliers` WRITE;
 /*!40000 ALTER TABLE `suppliers` DISABLE KEYS */;
-INSERT INTO `suppliers` VALUES (1,'Mircosoft','microsoft@microsoft.com',79533627315,432214,25,64,'гриб',34,NULL);
+INSERT INTO `suppliers` VALUES (1,'Mircosoft','microsoft@microsoft.com',79533627315,432214,25,64,'гриб',34,NULL),(2,'43433','vonkyvonkyvonky@gmail.com',79667163270,268452,1,3,'333',33,'2'),(3,'43433','vonkyvonkyvonky@gmail.com',79667163270,268452,1,3,'333',33,'2'),(4,'43433','vonkyvonkyvonky@gmail.com',79667163270,268452,1,3,'333',33,'2'),(5,'43433','vonkyvonkyvonky@gmail.com',79667163270,268452,1,3,'333',33,'2'),(6,'43433','vonkyvonkyvonky@gmail.com',79667163270,268452,1,3,'333',33,'2'),(7,'43433','vonkyvonkyvonky@gmail.com',79667163270,268452,1,3,'333',33,'2'),(8,'43433','vonkyvonkyvonky@gmil.com',79667163270,268452,1,3,'333',33,'2'),(9,'43433','vonkyvonkyvonky@l.com',79667163270,268452,1,3,'333',33,'2'),(10,'43433','vonkyvonkyvonky@ffff.ru',79667163270,268452,1,3,'333',33,'2');
 /*!40000 ALTER TABLE `suppliers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -790,11 +791,11 @@ CREATE TABLE `transfers` (
   `transfer_id` int NOT NULL AUTO_INCREMENT,
   `delivery_id` int NOT NULL,
   `barcode_id` bigint NOT NULL,
-  `from_premise_id` int NOT NULL,
+  `from_premise_id` int DEFAULT NULL,
   `to_premise_id` int NOT NULL,
   `start_date` timestamp NOT NULL,
-  `end_date` timestamp NOT NULL,
-  `quanity` int NOT NULL,
+  `end_date` timestamp NULL DEFAULT NULL,
+  `quantity` int NOT NULL,
   `sizex` int NOT NULL,
   `sizey` int NOT NULL,
   `sizez` int NOT NULL,
@@ -808,7 +809,7 @@ CREATE TABLE `transfers` (
   CONSTRAINT `delivery_id_fk` FOREIGN KEY (`delivery_id`) REFERENCES `delivery` (`delivery_id`),
   CONSTRAINT `from_premise_fk` FOREIGN KEY (`from_premise_id`) REFERENCES `premises` (`premise_id`),
   CONSTRAINT `to_premise_fk` FOREIGN KEY (`to_premise_id`) REFERENCES `premises` (`premise_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -817,6 +818,7 @@ CREATE TABLE `transfers` (
 
 LOCK TABLES `transfers` WRITE;
 /*!40000 ALTER TABLE `transfers` DISABLE KEYS */;
+INSERT INTO `transfers` VALUES (1,1,5454545454545,7,8,'2022-11-06 12:49:00',NULL,3,344,344,2323,433.000);
 /*!40000 ALTER TABLE `transfers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -829,4 +831,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-03 16:20:35
+-- Dump completed on 2022-11-09  0:36:29
