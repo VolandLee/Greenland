@@ -9,9 +9,15 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import django
 
+
+from django.contrib.auth import get_user_model
+LOGIN_REDIRECT_URL = 'home'
 from pathlib import Path
 from django.forms.renderers import TemplatesSetting
+
+
 """
 class CustomFormRenderer(TemplatesSetting):
     form_template_name = "form_add_supplier.html"
@@ -43,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Supp_ord'
+    'Supp_ord',
+
 ]
 
 MIDDLEWARE = [
@@ -83,7 +90,7 @@ WSGI_APPLICATION = 'Greenland.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydb',
+        'NAME': 'greenland',
         'USER': 'admin',
         'PASSWORD': '12345678',
         'HOST': 'localhost',
@@ -132,3 +139,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

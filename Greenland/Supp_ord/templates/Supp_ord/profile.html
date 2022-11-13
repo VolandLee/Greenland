@@ -1,33 +1,4 @@
-    <h1>Недавние игры</h1>
-    {% if profile %}
-
-<table class="table">
-    <thead>
-    <tr>
-        <th>Id поставщика</th>
-        <th>Имя</th>
-        <th>email</th>
-        <th>phone</th>
-        <th>website</th>
-
-
-    </tr>
-    </thead>
-    <tbody>
-
-    {% for row in profile %}
-      <tr >
-
-          <td>{{row.supplier_id}}</td>
-        <td>{{row.supplier_name}}</td>
-                        <td>{{row.email}}</td>
-                        <td>{{row.phone}}</td>
-      <td>{{row.website}}</td></tr>
-      {% endfor %}
-
-    </tbody>
-
-</table>
-    {% else %}
-        <p>Пока здесь нет записей</p>
-    {% endif %}
+{% extends 'Supp_ord/base.html' %}
+{% block content %}
+<h1>Ваш профиль</h1>
+{% endblock %}

@@ -3,7 +3,9 @@ from .regexp import *
 import re
 from importlib import reload
 import datetime
+from django.contrib.auth import get_user_model
 from django.db.models.query import QuerySet
+from django.db import models
 # Create your models here.
 """
 
@@ -24,12 +26,8 @@ class ClientsManager(models.Manager):
 
 
 class Clients(models.Model):
-    client_id = models.AutoField(primary_key=True)
-    FName = models.CharField(max_length=45)
-    LName = models.CharField(max_length=45)
-    Patronymic = models.CharField(max_length=45)
-    email = models.EmailField()
-    password = models.CharField(max_length=45)
+    client = models.ForeignKey(to=get_user_model(), primary_key=True,  on_delete=models.DO_NOTHING)
+    received_point = models.ForeignKey(to='Premises', on_delete=models.DO_NOTHING)
     phone = models.BigIntegerField()
     postcode = models.IntegerField()
     region = models.ForeignKey('Region', models.DO_NOTHING, null=True)
@@ -48,7 +46,7 @@ class Clients(models.Model):
         managed = False
         db_table = 'clients'
     def __str__(self):
-        return f'id={self.client_id}, {self.FName}, {self.LName}'
+        return f'id={self.client}'
 
     objects = models.Manager()
 
@@ -64,6 +62,43 @@ class Clients(models.Model):
         else:
             raise ValueError('Клиент не добавлен. Пожадуйста введите корректные данные')
 
+class Client_routes(models.Model):
+    client_route_id = models.AutoField(primary_key=True)
+    delivery_id = models.IntegerField()       #   ForeignKey('Delivery', models.DO_NOTHING, blank=True, null=True)
+    client_order = models.ForeignKey('Client_order', models.DO_NOTHING)
+    point = models.ForeignKey('Premises', models.DO_NOTHING, related_name='point_id_co', blank=True, null=True)
+    next_point = models.ForeignKey('Premises', models.DO_NOTHING, related_name='next_point_id_co')
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    status = models.IntegerField()
+
+    objects = models.Manager()
+    class Meta:
+        managed = False
+        db_table = 'client_routes'
+
+    def __str__(self):
+        return f'id={self.client_route_id}, Откуда={self.point}, Куда={self.next_point}'
+
+class Supplier_routes(models.Model):
+    supplier_route_id = models.AutoField(primary_key=True)
+    delivery = models.ForeignKey('Delivery', models.DO_NOTHING)
+    supplier_order = models.ForeignKey('Supplier_order', models.DO_NOTHING)
+    point = models.ForeignKey('Premises', models.DO_NOTHING, related_name='point_id_so', blank=True, null=True)
+    next_point = models.ForeignKey('Premises', models.DO_NOTHING, related_name='next_point_id_so')
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    status = models.IntegerField()
+
+
+    objects = models.Manager()
+    class Meta:
+        managed = False
+        db_table = 'supplier_routes'
+
+    def __str__(self):
+        return f'id={self.supplier_route_id}, Откуда={self.point}, Куда={self.next_point}, Служба доставки={self.delivery}'
+
 class Catalog(models.Model):
     catalog_id = models.AutoField(primary_key=True)
     catalog_name = models.CharField(max_length=45)
@@ -74,7 +109,7 @@ class Catalog(models.Model):
         db_table = 'catalog'
 
     def __str__(self):
-        return f'id={self.catalog_id}, {self.catalog_name}, Родитель_{self.parent}'
+        return f'id={self.catalog_id}, {self.catalog_name}, Родитель={self.parent}'
 
 class Premise_type(models.Model):
     premise_type_id = models.AutoField(primary_key=True)
@@ -122,13 +157,14 @@ class Premises(models.Model):
     coord_long = models.FloatField()
     coord_lat = models.FloatField()
     email = models.EmailField()
-    phone = models.BigIntegerField
+    phone = models.BigIntegerField()
     postcode = models.IntegerField()
     region = models.ForeignKey('Region', models.DO_NOTHING, null=True)
     city = models.ForeignKey('City', models.DO_NOTHING, null=True)
     street = models.CharField(max_length=45)
     h_number = models.IntegerField()
 
+    objects = models.Manager()
 
     class Meta:
         managed = False
@@ -181,21 +217,30 @@ class Employees(models.Model):
             raise ValueError('Работник не добавлен. Пожадуйста введите корректные данные')
 
 
-class Clients_order(models.Model):
-    clients_order_id = models.AutoField(primary_key=True)
+class Client_order(models.Model):
+    client_order_id = models.AutoField(primary_key=True)
     client = models.ForeignKey('Clients', models.DO_NOTHING, null=True)
-    barcode = models.ForeignKey('Products', models.DO_NOTHING, null=True)
+    product = models.ForeignKey('Products', models.DO_NOTHING, null=True)
+    from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise_co')
+    to_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='to_premise_co')
     client_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     order_date = models.DateTimeField()
     delivery_date = models.DateTimeField(blank=True, null=True)
     received_date = models.DateTimeField(blank=True, null=True)
+    sizex = models.IntegerField(blank=True, null=True)
+    sizey = models.IntegerField(blank=True, null=True)
+    sizez = models.IntegerField(blank=True, null=True)
+    weight = models.DecimalField(max_digits=8, decimal_places=3, blank=True, null=True)
+
+
+    objects = models.Manager()
 
     class Meta:
         managed = False
-        db_table = 'clients_order'
+        db_table = 'client_order'
     def __str__(self):
-        return f'id={self.clients_order_id}, {self.client}, {self.barcode}, {self.order_date}'
+        return f'id={self.client_order_id}, {self.client}, {self.product}, {self.order_date}'
 
 
 class Control_points(models.Model):
@@ -215,7 +260,7 @@ class Control_points(models.Model):
 
 
 class Delivery(models.Model):
-    delivery_id = models.AutoField(primary_key = True)
+    delivery_id = models.AutoField(primary_key=True)
     delivery_name = models.CharField(max_length=45)
     email = models.EmailField()
     phone = models.BigIntegerField()
@@ -230,28 +275,15 @@ class Delivery(models.Model):
         managed = False
         db_table = 'delivery'
     def __str__(self):
-        return f'id={self.delivery_id}, {self.delivery_id}'
+        return f'id={self.delivery_id}'
 
 
     objects = models.Manager()
-    @staticmethod
-    def add_delivery(delivery_name, email, phone, postcode, region_id, city_id, street,
-                     h_number, *args):
-        if re.search(reemail, email):
-            Delivery.objects.create(delivery_name=delivery_name,
-                                          email=email,
-                                          phone=phone, postcode=postcode,
-                                          region_id=region_id,
-                                          city_id=city_id, street=street, h_number=h_number, *args)
-            return ('Служба доставки добавлена')
-        else:
-            raise ValueError('Служба доставки не добавлена. Пожадуйста введите корректные данные')
-
 
 class Goodslist(models.Model):
     goodslist_id = models.AutoField(primary_key = True)
-    barcode = models.ForeignKey('Products', models.DO_NOTHING, null=True)
-    premise = models.ForeignKey('Premises', models.DO_NOTHING, null=True)
+    barcode = models.ForeignKey('Barcodes', models.DO_NOTHING)
+    premise = models.ForeignKey('Premises', models.DO_NOTHING)
     quantity = models.IntegerField()
     sizex = models.IntegerField()
     sizey = models.IntegerField()
@@ -272,21 +304,35 @@ class Goodslist(models.Model):
         Goodslist.objects.create(barcode_id=barcode_id, premise_id=premise_id, quantity=quantity,
                                  sizex=sizex, sizey=sizey, sizez=sizez, weight=weight)
 
-class Products(models.Model):
+
+class Barcodes(models.Model):
     barcode_id = models.BigIntegerField(primary_key=True)
     catalog = models.ForeignKey('Catalog', models.DO_NOTHING, null=True)
     supplier = models.ForeignKey('Suppliers', models.DO_NOTHING, null=True)
-    product_name = models.CharField(max_length=45)
+    barcode_name = models.CharField(max_length=45)
+    country = models.CharField(max_length=45)
+
+    class Meta:
+        managed = False
+        db_table = 'barcodes'
+
+    def __str__(self):
+        return f'barcode_id={self.barcode_id}, Название={self.barcode_name} Категория={self.catalog}, Произдводитель={self.supplier}'
+
+class Products(models.Model):
+    product_id = models.AutoField(primary_key=True)
+    barcode = models.ForeignKey('Barcodes', models.DO_NOTHING)
+    goodslist = models.ForeignKey('Goodslist', models.DO_NOTHING)
     supplier_price = models.DecimalField(max_digits=10, decimal_places=2)
     client_price = models.DecimalField(max_digits=10, decimal_places=2)
-    country = models.CharField(max_length=45)
+    quantity = models.IntegerField()
     available = models.BooleanField()
 
     class Meta:
         managed = False
         db_table = 'products'
     def __str__(self):
-        return f'id={self.barcode_id}, {self.product_name}, Категория:{self.catalog}'
+        return f'product_id={self.product_id}, Цена={self.client_price}, Количество на складе{self.quantity}'
 
     objects = models.Manager()
     @classmethod
@@ -302,11 +348,18 @@ class Supplier_order(models.Model):
     supplier_order_id = models.AutoField(primary_key = True)
     supplier = models.ForeignKey('Suppliers', models.DO_NOTHING, null=True)
     barcode = models.ForeignKey('Products', models.DO_NOTHING, null=True)
+    from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise_so', blank=True,
+                                     null=True)
+    to_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='to_premise_so')
     supplier_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     order_date = models.DateTimeField()
     delivery_date = models.DateTimeField(blank=True, null=True)
     received_date = models.DateTimeField(blank=True, null=True)
+    sizex = models.IntegerField()
+    sizey = models.IntegerField()
+    sizez = models.IntegerField()
+    weight = models.DecimalField(max_digits=8, decimal_places=3)
 
     objects = models.Manager()
 
@@ -344,34 +397,14 @@ class Suppliers(models.Model):
         return f'id={self.supplier_id}, {self.supplier_name}'
 
 
-class Transfers(models.Model):
-    transfer_id = models.AutoField(primary_key = True)
-    delivery = models.ForeignKey('Delivery', models.DO_NOTHING, null=True)
-    barcode = models.ForeignKey('Products', models.DO_NOTHING, null=True)
-    from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise',  blank=True, null=True)
-    to_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='to_premise')
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField(blank=True, null=True)
-    quantity = models.IntegerField()
-    sizex = models.IntegerField()
-    sizey = models.IntegerField()
-    sizez = models.IntegerField()
-    weight = models.DecimalField(max_digits=8, decimal_places=3)
 
-    objects = models.Manager()
-
-    class Meta:
-        managed = False
-        db_table = 'transfers'
-    def __str__(self):
-        return f'id={self.transfer_id}, {self.delivery}, {self.barcode}'
-
-
+    """
     @classmethod
     def add_transfer(cls, delivery_id, barcode_id, from_premise_id, to_premise_id, start_date, quantity, sizex, sizey, sizez, weight, *args):
         cls.objects.create(delivery_id=delivery_id, barcode_id=barcode_id, from_premise_id=from_premise_id, to_premise_id=to_premise_id, start_date=start_date,
                                quantity=quantity,
                                sizex=sizex, sizey=sizey, sizez=sizez, weight=weight, *args)
+    """
 
 
 

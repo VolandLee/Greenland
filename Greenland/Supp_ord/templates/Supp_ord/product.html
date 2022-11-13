@@ -1,0 +1,15 @@
+{% extends 'Supp_ord/base.html' %}
+{% block content %}
+
+
+<div class="fieldWrapper">
+        {{ product.barcode}}
+    {{ product }}
+
+
+    </div>
+<form method="post">{% csrf_token %}
+     <button  type="submit" class="btn btn-success">Купить товар
+</button></form>
+
+{% endblock %}
