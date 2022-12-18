@@ -11,6 +11,14 @@ from django.contrib.auth.decorators import login_required
 from .func import *
 from django.contrib import messages
 
+menu = [{'title': 'Каталог товаров', 'url_name': 'home'},
+        {'title': "На главную", 'url_name': 'home'},
+        {'title': "Профиль", 'url_name': 'profile'},
+        {'title': "Выйти из профиля", 'url_name': 'logout'},
+        {'title': "Войти", 'url_name': 'login'}
+        ]
+
+
 def login_user(request):
     username = request.POST['username']
     password = request.POST['password']
@@ -28,7 +36,6 @@ def profile(request):
         return render(request, template_name='Supp_ord/profile.html')
     else:
         return redirect('login')
-
 
     # product = request.POST.get('buy_product')
 
@@ -49,8 +56,18 @@ def add_supplier(request):
 
 
 def home(request):
-    products = Products.objects.all()
-    return render(request, template_name='Supp_ord/home.html', context={'products': products})
+    category = Catalog.objects.all()
+    barcode_i = []
+    products = []
+    barcode = Barcodes.objects.all()
+    barcode_id = barcode.values_list('barcode_id')
+    for i in barcode_id:
+        barcode_i.append(i[0])
+    for i in barcode_i:
+        products.append(Products.objects.filter(barcode=i))
+    context = {'menu': menu, 'category': category, 'products': products, 'barcode': barcode}
+    return render(request, template_name='Supp_ord/index.html', context=context)
+
 
 """
 @transaction.atomic
@@ -65,18 +82,33 @@ def create_new_transfer_supplier_order(request):
     Supplier_order.add_supplier_order(supplier_id=)
 """
 
+
+def show_category(request, cat_id):
+    barcode_i = []
+    products = []
+    barcode = Barcodes.objects.filter(catalog=cat_id)
+    barcode_id = barcode.values_list('barcode_id')
+    for i in barcode_id:
+        barcode_i.append(i[0])
+    for i in barcode_i:
+        products.append(Products.objects.filter(barcode=i))
+    context = {'menu': menu, 'products': products}
+    return render(request, template_name='Supp_ord/index.html', context=context)
+
+
 def product_details(request, product_id):
-    product = Products.objects.get(product_id=product_id)
+    products = Products.objects.get(product_id=product_id)
     if request.method == 'POST':
         if request.user.is_authenticated:
             return redirect('buy_product', product_id)
-            #Clients.objects.create(client_name=)
+            # Clients.objects.create(client_name=)
             pass
         else:
             return redirect('login')
         # product = request.POST.get('buy_product')
+    context = {'menu': menu, 'products': products}
 
-    return render(request, template_name='Supp_ord/product.html', context={'product': product})
+    return render(request, template_name='Supp_ord/product.html', context=context)
 
 
 @transaction.atomic
@@ -108,10 +140,10 @@ def buy_product(request, product_id):
                 current_client.save()
                 user_received_point = current_client.received_point_id
                 client_order = Client_order.objects.create(client_id=current_user_id, product_id=product_id,
-                                                     from_premise_id=from_premise_id,
-                                                     to_premise_id=user_received_point,
-                                                     client_price=product.client_price, quantity=quantity,
-                                                     order_date=datetime.datetime.now())
+                                                           from_premise_id=from_premise_id,
+                                                           to_premise_id=user_received_point,
+                                                           client_price=product.client_price, quantity=quantity,
+                                                           order_date=datetime.datetime.now())
                 print(from_premise_id, user_received_point, client_order.client_order_id)
                 create_routes_client_order(start_premise_id=from_premise_id, end_premise_id=user_received_point,
                                            client_order_id=client_order.client_order_id)
@@ -136,7 +168,8 @@ def add_barcode(request):
         return render(request, template_name='Supp_ord/add_barcode.html')
     else:
         form = AddBarcode
-        return render(request, template_name='Supp_ord/add_barcode.html', context={'form': form, 'tittle': 'Добавление штрихкода'})
+        return render(request, template_name='Supp_ord/add_barcode.html',
+                      context={'form': form, 'tittle': 'Добавление штрихкода'})
 
 
 def add_product(request):
@@ -150,11 +183,12 @@ def add_product(request):
         return render(request, template_name='Supp_ord/add_product.html')
     else:
         form = AddProduct
-        return render(request, template_name='Supp_ord/add_product.html', context={'form': form, 'tittle': 'Добавление продукта'})
+        return render(request, template_name='Supp_ord/add_product.html',
+                      context={'form': form, 'tittle': 'Добавление продукта'})
+
 
 @transaction.atomic
 def create_supplier_order(request):
-   
     if request.method == 'POST':
         form = CreateSupplierOrder(request.POST)
         if form.is_valid():
@@ -162,17 +196,20 @@ def create_supplier_order(request):
             form_kwargs = {el.name: int(el.value()) for el in form}
             form.save()
 
-            create_routes_supplier_order(start_premise_id=form_kwargs['from_premise_id'], end_premise_id=form_kwargs['to_premise_id'],
-                                       supplier_order_id=form_kwargs['supplier_order_id'])
+            create_routes_supplier_order(start_premise_id=form_kwargs['from_premise_id'],
+                                         end_premise_id=form_kwargs['to_premise_id'],
+                                         supplier_order_id=form_kwargs['supplier_order_id'])
 
+        else:
+            if quantity == 1:
+                ValueError('Товар закончился')
             else:
-                if quantity == 1:
-                    ValueError('Товар закончился')
-                else:
-                    ValueError('На складе не соталось столько товар. Пожалкуйста уменьшите количество')
+                ValueError('На складе не соталось столько товар. Пожалкуйста уменьшите количество')
+
     else:
         form = BuyProduct
-    return render(request, template_name='Supp_ord/buy_product.html', context={'form': form, 'product': product})
+        return render(request, template_name='Supp_ord/buy_product.html', context={'form': form, 'product': product})
+
 
 """
 def routes_update_status(request):
@@ -193,4 +230,3 @@ def routes_update_status(request):
                           context={'form': form, 'tittle': 'Обновления статуса доставки'})
 
 """
-

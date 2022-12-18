@@ -37,7 +37,7 @@ SECRET_KEY = 'django-insecure-cw4_b9=+#n@@bqx)_0p6^wv!7mt*_gs+y5y_(6+bkp=v=1vw_h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Supp_ord',
+    'Supp_ord.apps.SuppOrdConfig',
 
 ]
 
@@ -92,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'greenland',
         'USER': 'postgres',
-        'PASSWORD': '31520424',
+        'PASSWORD': 'Fok-36A-Drag',
         'HOST': 'localhost',
         'PORT': '5432'
     }
@@ -121,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 

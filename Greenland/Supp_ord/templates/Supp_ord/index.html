@@ -1,0 +1,21 @@
+{% extends 'Supp_ord/base.html' %}
+{% block content %}
+
+{% for p in products %}
+<div class="field"><a href="#">{{ p.get_absolute_url }}</a>
+</div>
+{% for i in p %}
+{% if p is empty %}
+
+{% else %}
+
+<div class="field"><a href="{{ i.get_absolute_url }}">{{ i }}</a>
+
+</div>
+{% endif %}
+
+{% endfor %}
+{% endfor %}
+
+
+{% endblock %}
