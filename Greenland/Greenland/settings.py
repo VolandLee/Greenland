@@ -89,12 +89,12 @@ WSGI_APPLICATION = 'Greenland.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'greenland',
-        'USER': 'admin',
-        'PASSWORD': '12345678',
+        'USER': 'postgres',
+        'PASSWORD': '31520424',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '5432'
     }
 }
 

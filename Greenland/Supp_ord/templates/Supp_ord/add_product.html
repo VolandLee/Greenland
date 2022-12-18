@@ -1,0 +1,22 @@
+{% extends 'Supp_ord/base.html' %}
+{% block content %}
+
+<title>{{ title }}</title>
+<h1>{{ title }}</h1>
+{% if form %}
+{% for field in form %}
+<form method="post">{% csrf_token %}
+    <div class="fieldWrapper">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+    </div>
+{% endfor %}
+<button type="submit" class="btn btn-success">Добавить продукт</button></form>
+{% endif %}
+{% if messages %}
+{% for message in messages %}
+{{ message.tags }} {{ message }}
+{% endfor %}
+{% endif %}
+
+{% endblock %}

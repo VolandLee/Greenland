@@ -82,7 +82,7 @@ class Client_routes(models.Model):
 
 class Supplier_routes(models.Model):
     supplier_route_id = models.AutoField(primary_key=True)
-    delivery = models.ForeignKey('Delivery', models.DO_NOTHING)
+    delivery = models.ForeignKey('Delivery', models.DO_NOTHING, blank=True, null=True)
     supplier_order = models.ForeignKey('Supplier_order', models.DO_NOTHING)
     point = models.ForeignKey('Premises', models.DO_NOTHING, related_name='point_id_so', blank=True, null=True)
     next_point = models.ForeignKey('Premises', models.DO_NOTHING, related_name='next_point_id_so')
@@ -351,11 +351,11 @@ class Supplier_order(models.Model):
     from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise_so', blank=True,
                                      null=True)
     to_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='to_premise_so')
+    client_price = models.DecimalField(max_digits=10, decimal_places=2)
     supplier_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     order_date = models.DateTimeField()
     delivery_date = models.DateTimeField(blank=True, null=True)
-    received_date = models.DateTimeField(blank=True, null=True)
     sizex = models.IntegerField()
     sizey = models.IntegerField()
     sizez = models.IntegerField()

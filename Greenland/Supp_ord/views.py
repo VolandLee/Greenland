@@ -89,8 +89,9 @@ def buy_product(request, product_id):
     if request.method == 'POST':
         form = BuyProduct(request.POST)
         if form.is_valid():
-            quantity = int(form['quantity'].value())
-            print(quantity)
+
+            form_kwargs = {el.name: int(el.value()) for el in form}
+            quantity = form_kwargs['quantity']
             from_premise_id = product.goodslist.premise_id
             if quantity <= product.quantity:
                 product.goodslist.quantity -= quantity
@@ -122,4 +123,74 @@ def buy_product(request, product_id):
     else:
         form = BuyProduct
     return render(request, template_name='Supp_ord/buy_product.html', context={'form': form, 'product': product})
+
+
+def add_barcode(request):
+    if request.method == 'POST':
+        form = AddBarcode(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Штрихкод умпешно добавлен')
+        else:
+            messages.error(request, 'Введите корректные значения!')
+        return render(request, template_name='Supp_ord/add_barcode.html')
+    else:
+        form = AddBarcode
+        return render(request, template_name='Supp_ord/add_barcode.html', context={'form': form, 'tittle': 'Добавление штрихкода'})
+
+
+def add_product(request):
+    if request.method == 'POST':
+        form = AddProduct(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Продукт умпешно добавлен')
+        else:
+            messages.error(request, 'Введите корректные значения!')
+        return render(request, template_name='Supp_ord/add_product.html')
+    else:
+        form = AddProduct
+        return render(request, template_name='Supp_ord/add_product.html', context={'form': form, 'tittle': 'Добавление продукта'})
+
+@transaction.atomic
+def create_supplier_order(request):
+   
+    if request.method == 'POST':
+        form = CreateSupplierOrder(request.POST)
+        if form.is_valid():
+
+            form_kwargs = {el.name: int(el.value()) for el in form}
+            form.save()
+
+            create_routes_supplier_order(start_premise_id=form_kwargs['from_premise_id'], end_premise_id=form_kwargs['to_premise_id'],
+                                       supplier_order_id=form_kwargs['supplier_order_id'])
+
+            else:
+                if quantity == 1:
+                    ValueError('Товар закончился')
+                else:
+                    ValueError('На складе не соталось столько товар. Пожалкуйста уменьшите количество')
+    else:
+        form = BuyProduct
+    return render(request, template_name='Supp_ord/buy_product.html', context={'form': form, 'product': product})
+
+"""
+def routes_update_status(request):
+    if request.method == 'POST':
+        form = UpdateRoute(request.POST)
+
+        if form.is_valid():
+            form_kwargs = {el.name: int(el.value()) for el in form}
+            if client_routes_update_status(form_kwargs['client_order_id'], form_kwargs['premise_id']):
+                Client_order.objects.get(form_kwargs['client_order_id']).update(delivery_date=datetime.datetime.now())
+                #здесь надо отправить email пользователю, что посылка прибыла и ожидает получения
+        else:
+            messages.error(request, 'Введите корректные значения!')
+            return render(request, template_name='Supp_ord/routes_update_status.html')
+    else:
+        form = AddProduct
+        return render(request, template_name='Supp_ord/add_product.html',
+                          context={'form': form, 'tittle': 'Обновления статуса доставки'})
+
+"""
 

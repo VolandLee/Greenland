@@ -1,0 +1,287 @@
+
+CREATE TABLE actions (
+  action_id int NOT NULL,
+  action_name varchar(45) NOT NULL,
+  PRIMARY KEY (action_id)
+);
+
+
+
+
+CREATE TABLE barcodes (
+  barcode_id bigint NOT NULL,
+  catalog_id int NOT NULL,
+  supplier_id int NOT NULL,
+  barcode_name varchar(45) NOT NULL,
+  country varchar(45) NOT NULL,
+  PRIMARY KEY (barcode_id),
+CONSTRAINT category_id_fk FOREIGN KEY (catalog_id) REFERENCES catalog (catalog_id),
+  CONSTRAINT supplier_id_fk FOREIGN KEY (supplier_id) REFERENCES suppliers (supplier_id)
+); 
+
+
+CREATE TABLE catalog (
+  catalog_id int NOT NULL,
+  catalog_name varchar(45) NOT NULL,
+  parent_id int DEFAULT NULL,
+  PRIMARY KEY (catalog_id)
+  
+); 
+
+
+CREATE TABLE city (
+  city_id int NOT NULL,
+  city_name varchar(45) DEFAULT NULL,
+  PRIMARY KEY (city_id)
+) ;
+
+
+
+
+
+CREATE TABLE client_order (
+  client_order_id int NOT NULL,
+  client_id int NOT NULL,
+  product_id int NOT NULL,
+  from_premise_id int NOT NULL,
+  to_premise_id int NOT NULL,
+  client_price decimal(10,2) NOT NULL,
+  order_date timestamp NOT NULL,
+  delivery_date timestamp NULL DEFAULT NULL,
+  received_date timestamp NULL DEFAULT NULL,
+  sizex int DEFAULT NULL,
+  sizey int DEFAULT NULL,
+  sizez int DEFAULT NULL,
+  weight decimal(8,3) DEFAULT NULL,
+  PRIMARY KEY (client_order_id),
+  CONSTRAINT client_fk FOREIGN KEY (client_id) REFERENCES clients (client_id),
+  CONSTRAINT from_premise_co FOREIGN KEY (from_premise_id) REFERENCES premises (premise_id),
+  CONSTRAINT product_fk_co FOREIGN KEY (product_id) REFERENCES products (product_id),
+  CONSTRAINT to_premise_co FOREIGN KEY (to_premise_id) REFERENCES premises (premise_id)
+); 
+
+
+
+CREATE TABLE client_routes (
+  client_route_id int NOT NULL,
+  delivery_id int DEFAULT NULL,
+  client_order_id int NOT NULL,
+  point_id int NOT NULL,
+  next_point_id int NOT NULL,
+  start_date datetime DEFAULT NULL,
+  end_date datetime DEFAULT NULL,
+  status int NOT NULL,
+  PRIMARY KEY (client_route_id),
+  
+  CONSTRAINT client_order_id_fk FOREIGN KEY (client_order_id) REFERENCES client_order (client_order_id),
+  CONSTRAINT delivery_ud_kf_cr FOREIGN KEY (delivery_id) REFERENCES delivery (delivery_id),
+  CONSTRAINT next_point_id_fk_co FOREIGN KEY (next_point_id) REFERENCES premises (premise_id),
+  CONSTRAINT point_id_fk_co FOREIGN KEY (point_id) REFERENCES premises (premise_id)
+);
+
+
+CREATE TABLE clients (
+  client_id int NOT NULL,
+  received_point_id int DEFAULT NULL,
+  phone bigint NOT NULL,
+  postcode int NOT NULL,
+  region_id int NOT NULL,
+  city_id int NOT NULL,
+  street varchar(45) NOT NULL,
+  h_number int NOT NULL,
+  gender tinyint(1) NOT NULL,
+  birth_date date NOT NULL,
+  balance decimal(10,2) NOT NULL DEFAULT '0.00',
+  liked json DEFAULT NULL,
+  PRIMARY KEY (client_id),
+  
+  CONSTRAINT client_id_fk FOREIGN KEY (client_id) REFERENCES auth_user (id),
+  CONSTRAINT received_point_id_fk FOREIGN KEY (received_point_id) REFERENCES premises (premise_id),
+  CONSTRAINT clients_chk_1 CHECK (((phone >= 70000000000) and (phone < 80000000000))),
+  CONSTRAINT clients_chk_2 CHECK (((postcode >= 100000) and (postcode < 1000000)))
+);
+
+
+
+CREATE TABLE control_points (
+  control_points_id int NOT NULL,
+  employee_id int NOT NULL,
+  product_id int NOT NULL,
+  action_id int NOT NULL,
+  premise_id int NOT NULL,
+  time timestamp NOT NULL,
+  PRIMARY KEY (control_points_id),
+  CONSTRAINT action_id_fk FOREIGN KEY (action_id) REFERENCES actions (action_id),
+  CONSTRAINT employee_id_cp_fk FOREIGN KEY (employee_id) REFERENCES employees (employee_id),
+  CONSTRAINT premise_id_cp_fk FOREIGN KEY (premise_id) REFERENCES premises (premise_id),
+  CONSTRAINT product_fk_cp FOREIGN KEY (product_id) REFERENCES products (product_id)
+); 
+
+
+CREATE TABLE delivery (
+  delivery_id int NOT NULL,
+  delivery_name varchar(45) NOT NULL,
+  email varchar(45) NOT NULL,
+  phone bigint NOT NULL,
+  postcode int NOT NULL,
+  region_id int NOT NULL,
+  city_id int NOT NULL,
+  street varchar(45) NOT NULL,
+  h_number int NOT NULL,
+  website varchar(45) DEFAULT NULL,
+  PRIMARY KEY (delivery_id),
+  CONSTRAINT delivery_chk_1 CHECK (((phone >= 70000000000) and (phone < 80000000000))),
+  CONSTRAINT delivery_chk_2 CHECK (((postcode >= 100000) and (postcode < 1000000)))
+);
+
+
+
+
+CREATE TABLE employees (
+  employee_id int NOT NULL,
+  premise_id int NOT NULL,
+  FName varchar(45) NOT NULL,
+  LName varchar(45) NOT NULL,
+  Patronymic varchar(45) NOT NULL,
+  email varchar(45) NOT NULL,
+  password varchar(45) NOT NULL,
+  phone bigint NOT NULL,
+  postcode int NOT NULL,
+  region_id int NOT NULL,
+  city_id int NOT NULL,
+  street varchar(45) NOT NULL,
+  h_number int NOT NULL,
+  gender tinyint(1) NOT NULL,
+  birth_date date NOT NULL,
+  hire_date date NOT NULL,
+  chief_id int DEFAULT NULL,
+  PRIMARY KEY (employee_id),
+  CONSTRAINT chief_id_fk FOREIGN KEY (chief_id) REFERENCES employees (employee_id),
+  CONSTRAINT premise_id_e_fk FOREIGN KEY (premise_id) REFERENCES premises (premise_id),
+  CONSTRAINT employees_chk_1 CHECK (((phone >= 70000000000) and (phone < 80000000000))),
+  CONSTRAINT employees_chk_2 CHECK (((postcode >= 100000) and (postcode < 1000000)))
+) ;
+
+
+
+CREATE TABLE goodslist (
+  goodslist_id int NOT NULL,
+  barcode_id bigint NOT NULL,
+  premise_id int NOT NULL,
+  quantity int NOT NULL,
+  sizex int NOT NULL,
+  sizey int NOT NULL,
+  sizez int NOT NULL,
+  weight decimal(8,3) NOT NULL,
+  PRIMARY KEY (goodslist_id),
+ CONSTRAINT barcode_fk_g FOREIGN KEY (barcode_id) REFERENCES barcodes (barcode_id),
+  CONSTRAINT premise_id_g_fk FOREIGN KEY (premise_id) REFERENCES premises (premise_id)
+) ;
+
+
+
+CREATE TABLE premise_type (
+  premise_type_id int NOT NULL,
+  type_decryp varchar(45) NOT NULL,
+  PRIMARY KEY (premise_type_id)
+); 
+
+
+CREATE TABLE premises (
+  premise_id int NOT NULL,
+  premise_type_id int NOT NULL,
+  coord_long float NOT NULL,
+  coord_lat float NOT NULL,
+  email varchar(45) NOT NULL,
+  phone bigint NOT NULL,
+  postcode int NOT NULL,
+  region_id int NOT NULL,
+  city_id int NOT NULL,
+  street varchar(45) NOT NULL,
+  h_number int NOT NULL,
+  PRIMARY KEY (premise_id),
+  
+  CONSTRAINT premise_type_fk FOREIGN KEY (premise_type_id) REFERENCES premise_type (premise_type_id),
+  CONSTRAINT premises_chk_1 CHECK (((phone >= 70000000000) and (phone < 80000000000))),
+  CONSTRAINT premises_chk_2 CHECK (((postcode >= 100000) and (postcode < 1000000)))
+); 
+
+
+
+CREATE TABLE products (
+  product_id int NOT NULL,
+  barcode_id bigint NOT NULL,
+  goodslist_id int NOT NULL,
+  supplier_price decimal(10,2) NOT NULL,
+  client_price decimal(10,2) NOT NULL,
+  quantity int NOT NULL,
+  available tinyint(1) NOT NULL,
+  PRIMARY KEY (product_id),
+  CONSTRAINT barcode_fk_p FOREIGN KEY (barcode_id) REFERENCES barcodes (barcode_id),
+  CONSTRAINT goodslist_fk_g FOREIGN KEY (goodslist_id) REFERENCES goodslist (goodslist_id)
+); 
+
+
+CREATE TABLE region (
+  region_id int NOT NULL,
+  region_name varchar(90) DEFAULT NULL,
+  PRIMARY KEY (region_id)
+) ;
+
+
+CREATE TABLE supplier_order (
+  supplier_order_id int NOT NULL,
+  supplier_id int NOT NULL,
+  barcode_id int NOT NULL,
+  from_premise int NOT NULL,
+  to_premise int NOT NULL,
+  client_price decimal(10,2) NOT NULL,
+  supplier_price decimal(10,2) NOT NULL,
+  quantity int NOT NULL,
+  order_date timestamp NOT NULL,
+  delivery_date timestamp NULL DEFAULT NULL,
+  sizex int NOT NULL,
+  sizey int NOT NULL,
+  sizez int NOT NULL,
+  wieght decimal(8,3) NOT NULL,
+  PRIMARY KEY (supplier_order_id),
+  CONSTRAINT from_premise_so FOREIGN KEY (from_premise) REFERENCES premises (premise_id),
+  CONSTRAINT product_fk_so FOREIGN KEY (barcode_id) REFERENCES products (product_id),
+  CONSTRAINT supplier_fk FOREIGN KEY (supplier_id) REFERENCES suppliers (supplier_id),
+  CONSTRAINT to_premise_so FOREIGN KEY (to_premise) REFERENCES premises (premise_id)
+) ;
+
+
+CREATE TABLE supplier_routes (
+  supplier_route_id int NOT NULL,
+  delivey_id int NOT NULL,
+  supplier_order_id int NOT NULL,
+  point_id int DEFAULT NULL,
+  next_point_id int NOT NULL,
+  start_date datetime NOT NULL,
+  end_date datetime DEFAULT NULL,
+  status int NOT NULL,
+  PRIMARY KEY (supplier_route_id),
+  CONSTRAINT delivey_id_fk_sr FOREIGN KEY (delivey_id) REFERENCES delivery (delivery_id),
+  CONSTRAINT next_point_id_fk_so FOREIGN KEY (next_point_id) REFERENCES premises (premise_id),
+  CONSTRAINT point_id_fk_so FOREIGN KEY (point_id) REFERENCES premises (premise_id),
+  CONSTRAINT supplier_order_id_fk FOREIGN KEY (supplier_order_id) REFERENCES supplier_order (supplier_order_id)
+) ;
+
+
+
+CREATE TABLE suppliers (
+  supplier_id int NOT NULL,
+  supplier_name varchar(45) NOT NULL,
+  email varchar(45) NOT NULL,
+  phone bigint NOT NULL,
+  postcode int NOT NULL,
+  region_id int NOT NULL,
+  city_id int NOT NULL,
+  street varchar(45) NOT NULL,
+  h_number int NOT NULL,
+  website varchar(45) DEFAULT NULL,
+  PRIMARY KEY (supplier_id),
+  CONSTRAINT suppliers_chk_1 CHECK (((phone >= 70000000000) and (phone < 80000000000))),
+  CONSTRAINT suppliers_chk_2 CHECK (((postcode >= 100000) and (postcode < 1000000)))
+);
