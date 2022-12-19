@@ -88,11 +88,35 @@ WSGI_APPLICATION = 'Greenland.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+'default': {},
+    'root': {
         'ENGINE': 'django.db.backends.postgresql',
+
         'NAME': 'greenland',
         'USER': 'postgres',
         'PASSWORD': '31520424',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    },
+    'goodslist_employyes': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'OPTIONS' : {
+                'options': '-c search_path=supplier'
+            },
+        'NAME': 'greenland',
+        'USER': 'goodslist_employyes',
+        'PASSWORD': '12345678',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    },
+    'supply_manager': {
+        'ENGINE': 'django.db.backends_psycopg2',
+    'OPTIONS' : {
+                'options': '-c search_path=supplier'
+            },
+        'NAME': 'greenland',
+        'USER': 'supply_manager',
+        'PASSWORD': '12345678',
         'HOST': 'localhost',
         'PORT': '5432'
     }

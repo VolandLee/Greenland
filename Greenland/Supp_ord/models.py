@@ -294,7 +294,7 @@ class Employees(models.Model):
 
 class Goodslist(models.Model):
     goodslist_id = models.IntegerField(primary_key=True)
-    barcode = models.ForeignKey(Barcodes, models.DO_NOTHING)
+    product = models.ForeignKey('Products', models.DO_NOTHING)
     premise = models.ForeignKey('Premises', models.DO_NOTHING)
     quantity = models.IntegerField()
     sizex = models.IntegerField()
@@ -302,7 +302,8 @@ class Goodslist(models.Model):
     sizez = models.IntegerField()
     weight = models.DecimalField(max_digits=8, decimal_places=3)
 
-    class Meta:
+
+class Meta:
         managed = False
         db_table = 'goodslist'
 
@@ -335,9 +336,8 @@ class Premises(models.Model):
 
 
 class Products(models.Model):
-    product_id = models.AutoField(primary_key=True)
+    product_id = models.IntegerField(primary_key=True)
     barcode = models.ForeignKey(Barcodes, models.DO_NOTHING)
-    goodslist = models.ForeignKey(Goodslist, models.DO_NOTHING)
     supplier_price = models.DecimalField(max_digits=10, decimal_places=2)
     client_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
@@ -358,12 +358,12 @@ class Region(models.Model):
 
 
 class Supplier_Order(models.Model):
-    supplier_order_id = models.AutoField(primary_key=True)
+    supplier_order_id = models.IntegerField(primary_key=True)
     supplier = models.ForeignKey('Suppliers', models.DO_NOTHING)
     product = models.ForeignKey(Products, models.DO_NOTHING)
-    from_premise = models.ForeignKey(Premises, models.DO_NOTHING, db_column='from_premise', related_name='from_premise_so')
-    to_premise = models.ForeignKey(Premises, models.DO_NOTHING, db_column='to_premise', related_name='to_premise_so')
-    client_price = models.DecimalField(max_digits=10, decimal_places=2)
+    from_premise = models.ForeignKey(Premises, models.DO_NOTHING, db_column='from_premise', related_name='from_premise')
+    to_premise = models.ForeignKey(Premises, models.DO_NOTHING, db_column='to_premise', related_name='to_premise')
+    current_supplier_route = models.ForeignKey('Supplier_Routes', models.DO_NOTHING, blank=True, null=True)
     supplier_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     order_date = models.DateTimeField()
@@ -371,20 +371,23 @@ class Supplier_Order(models.Model):
     sizex = models.IntegerField()
     sizey = models.IntegerField()
     sizez = models.IntegerField()
-    wieght = models.DecimalField(max_digits=8, decimal_places=3)
+    weight = models.DecimalField(max_digits=8, decimal_places=3)
 
     class Meta:
         managed = False
         db_table = 'supplier_order'
 
 
+
+
 class Supplier_Routes(models.Model):
-    supplier_route_id = models.IntegerField(primary_key=True)
-    delivey = models.ForeignKey(Delivery, models.DO_NOTHING)
-    supplier_order = models.ForeignKey(Supplier_Order, models.DO_NOTHING)
+    supplier_route_id = models.AutoField(primary_key=True)
+    parent = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
+    delivery = models.ForeignKey(Delivery, models.DO_NOTHING)
+    goodslist = models.ForeignKey(Goodslist, models.DO_NOTHING, blank=True, null=True)
     point = models.ForeignKey(Premises, models.DO_NOTHING, blank=True, null=True, related_name='point_sr')
     next_point = models.ForeignKey(Premises, models.DO_NOTHING, related_name='next_point_sr')
-    start_date = models.DateTimeField()
+    start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField()
 
