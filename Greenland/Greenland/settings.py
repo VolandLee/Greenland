@@ -92,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'greenland',
         'USER': 'postgres',
-        'PASSWORD': 'Fok-36A-Drag',
+        'PASSWORD': '31520424',
         'HOST': 'localhost',
         'PORT': '5432'
     }

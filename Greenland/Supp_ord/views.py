@@ -109,7 +109,7 @@ def product_details(request, product_id):
     context = {'menu': menu, 'products': products}
 
     return render(request, template_name='Supp_ord/product.html', context=context)
-
+"""
 
 @transaction.atomic
 def buy_product(request, product_id):
@@ -213,7 +213,7 @@ def create_supplier_order(request):
         form = BuyProduct
         return render(request, template_name='Supp_ord/buy_product.html', context={'form': form, 'product': product})
 
-
+"""
 """
 def routes_update_status(request):
     if request.method == 'POST':

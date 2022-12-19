@@ -39,7 +39,7 @@ class AddProduct(ModelForm):
 
 class CreateSupplierOrder(forms.Form):
     class Meta:
-        model = Supplier_order
+        model = Supplier_Order
         fields = ['supplier_order_id', 'supplier', 'barcode', 'from_premise', 'to_premise', 'client_price',
                   'supplier_price', 'quantity', 'order_date', 'sizex', 'sizey', 'sizez', 'weight']
 
