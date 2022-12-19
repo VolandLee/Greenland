@@ -34,7 +34,7 @@ class AddProduct(ModelForm):
 
     class Meta:
         model = Products
-        fields = ['barcode', 'goodslist', 'supplier_price', 'client_price', 'quantity', 'available']
+        fields = ['barcode', 'supplier_price', 'client_price', 'quantity', 'available']
 
 
 class CreateSupplierOrder(forms.Form):
