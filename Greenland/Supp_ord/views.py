@@ -154,7 +154,10 @@ def buy_product(request, product_id):
                     ValueError('На складе не соталось столько товар. Пожалкуйста уменьшите количество')
     else:
         form = BuyProduct
-    return render(request, template_name='Supp_ord/buy_product.html', context={'form': form, 'product': product})
+
+    context = {'form': form, 'product': product, 'menu': menu}
+
+    return render(request, template_name='Supp_ord/buy_product.html', context=context)
 
 
 def add_barcode(request):

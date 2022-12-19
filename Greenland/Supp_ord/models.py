@@ -7,7 +7,7 @@ from importlib import reload
 import datetime
 from django.contrib.auth import get_user_model
 from django.db.models.query import QuerySet
-from django.db import models
+from django.db import models, connection
 
 # Create your models here.
 """
@@ -45,6 +45,7 @@ class Clients(models.Model):
     class Meta:
         managed = False
         db_table = 'clients'
+        verbose_name_plural = "Clients"
 
     def __str__(self):
         return f'id={self.client}'
@@ -81,19 +82,27 @@ class Client_routes(models.Model):
     class Meta:
         managed = False
         db_table = 'client_routes'
+        verbose_name_plural = "Client_routes"
 
     def __str__(self):
         return f'id={self.client_route_id}, Откуда={self.point}, Куда={self.next_point}'
 
 
+def sequence_id():
+    with connection.cursor() as cursor:
+        cursor.execute("""SELECT nextval('supplier_routes_seq')""")
+        return cursor.fetchone()[0]
+
+
 class Supplier_routes(models.Model):
-    supplier_route_id = models.AutoField(primary_key=True)
-    delivery = models.ForeignKey('Delivery', models.DO_NOTHING, blank=True, null=True)
-    supplier_order = models.ForeignKey('Supplier_order', models.DO_NOTHING)
+    supplier_route_id = models.AutoField(primary_key=True, default=sequence_id)
+    parent = models.ForeignKey('Supplier_routes', models.DO_NOTHING, blank=True, null=True)
+    delivery = models.ForeignKey('Delivery', models.DO_NOTHING)
+    goodslist = models.ForeignKey('Goodslist', models.DO_NOTHING, blank=True, null=True)
     point = models.ForeignKey('Premises', models.DO_NOTHING, related_name='point_id_so', blank=True, null=True)
     next_point = models.ForeignKey('Premises', models.DO_NOTHING, related_name='next_point_id_so')
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField()
 
     objects = models.Manager()
@@ -101,6 +110,7 @@ class Supplier_routes(models.Model):
     class Meta:
         managed = False
         db_table = 'supplier_routes'
+        verbose_name_plural = "Supplier_routes"
 
     def __str__(self):
         return f'id={self.supplier_route_id}, Откуда={self.point}, Куда={self.next_point}, Служба доставки={self.delivery}'
@@ -176,6 +186,7 @@ class Premises(models.Model):
     class Meta:
         managed = False
         db_table = 'premises'
+        verbose_name_plural = "Permises"
 
     def __str__(self):
         return f'id={self.premise_id}, {self.premise_type}, {self.region}, {self.city}'
@@ -203,6 +214,7 @@ class Employees(models.Model):
     class Meta:
         managed = False
         db_table = 'employees'
+        verbose_name_plural = "Employees"
 
     def __str__(self):
         return f'id={self.employee_id}, {self.FName}, {self.LName}'
@@ -262,6 +274,7 @@ class Control_points(models.Model):
     class Meta:
         managed = False
         db_table = 'control_points'
+        verbose_name_plural = "Control_points"
 
     def __str__(self):
         return f'id={self.control_points_id}, {self.employee}, {self.barcode}, {self.action}, {self.premise}'
@@ -291,7 +304,7 @@ class Delivery(models.Model):
 
 class Goodslist(models.Model):
     goodslist_id = models.AutoField(primary_key=True)
-    barcode = models.ForeignKey('Barcodes', models.DO_NOTHING)
+    product = models.ForeignKey('Products', models.DO_NOTHING)
     premise = models.ForeignKey('Premises', models.DO_NOTHING)
     quantity = models.IntegerField()
     sizex = models.IntegerField()
@@ -306,7 +319,7 @@ class Goodslist(models.Model):
         db_table = 'goodslist'
 
     def __str__(self):
-        return f'id={self.goodslist_id}, {self.barcode}, {self.quantity}'
+        return f'id={self.goodslist_id}, {self.product}, {self.quantity}'
 
     @staticmethod
     def add_goodslist(barcode_id, premise_id, quantity, sizex, sizey, sizez, weight):
@@ -324,6 +337,7 @@ class Barcodes(models.Model):
     class Meta:
         managed = False
         db_table = 'barcodes'
+        verbose_name_plural = "Barcodes"
 
     def __str__(self):
         return f'barcode_id={self.barcode_id}, Название={self.barcode_name} Категория={self.catalog}, Произдводитель={self.supplier}'
@@ -332,15 +346,17 @@ class Barcodes(models.Model):
 class Products(models.Model):
     product_id = models.AutoField(primary_key=True)
     barcode = models.ForeignKey('Barcodes', models.DO_NOTHING)
-    goodslist = models.ForeignKey('Goodslist', models.DO_NOTHING)
+    #goodslist = models.ForeignKey('Goodslist', models.DO_NOTHING, related_name='+')
     supplier_price = models.DecimalField(max_digits=10, decimal_places=2)
-    client_price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.IntegerField()
+    client_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
+    quantity = models.IntegerField(verbose_name='Количество')
     available = models.BooleanField()
 
     class Meta:
         managed = False
         db_table = 'products'
+        verbose_name_plural = "Products"
+        ordering = ['product_id']
 
     def __str__(self):
         return f'product_id={self.product_id}, Цена={self.client_price}, Количество на складе{self.quantity}'
@@ -364,12 +380,11 @@ class Products(models.Model):
 
 class Supplier_order(models.Model):
     supplier_order_id = models.AutoField(primary_key=True)
-    supplier = models.ForeignKey('Suppliers', models.DO_NOTHING, null=True)
-    barcode = models.ForeignKey('Products', models.DO_NOTHING, null=True)
-    from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise_so', blank=True,
-                                     null=True)
+    supplier = models.ForeignKey('Suppliers', models.DO_NOTHING)
+    product = models.ForeignKey('Products', models.DO_NOTHING)
+    from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise_so')
     to_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='to_premise_so')
-    client_price = models.DecimalField(max_digits=10, decimal_places=2)
+    current_supplier_route = models.ForeignKey('Supplier_routes', models.DO_NOTHING, null=True)
     supplier_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     order_date = models.DateTimeField()
@@ -412,6 +427,7 @@ class Suppliers(models.Model):
     class Meta:
         managed = False
         db_table = 'suppliers'
+        verbose_name_plural = "Suppliers"
 
     def __str__(self):
         return f'id={self.supplier_id}, {self.supplier_name}'
@@ -432,6 +448,7 @@ class Actions(models.Model):
     class Meta:
         managed = False
         db_table = 'actions'
+        verbose_name_plural = "Actions"
 
     def __str__(self):
         return f'id={self.action_id}, {self.action_name}'
