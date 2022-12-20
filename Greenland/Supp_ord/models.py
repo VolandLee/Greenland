@@ -126,6 +126,9 @@ class Catalog(models.Model):
         managed = False
         db_table = 'catalog'
 
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'cat_id': self.pk})
+
 
 class City(models.Model):
     city_id = models.IntegerField(primary_key=True)
@@ -142,7 +145,7 @@ class Client_Order(models.Model):
     product = models.ForeignKey('Products', models.DO_NOTHING)
     from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise_co')
     to_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='to_premise_co')
-    client_price = models.DecimalField(max_digits=10, decimal_places=2,)
+    client_price = models.DecimalField(max_digits=10, decimal_places=2, )
     order_date = models.DateTimeField()
     delivery_date = models.DateTimeField(blank=True, null=True)
     received_date = models.DateTimeField(blank=True, null=True)
@@ -192,6 +195,7 @@ class Clients(models.Model):
 
     def __str__(self):
         return f'id={self.client}'
+
 
 class ControlPoints(models.Model):
     control_points_id = models.IntegerField(primary_key=True)
@@ -304,8 +308,8 @@ class Goodslist(models.Model):
 
 
 class Meta:
-        managed = False
-        db_table = 'goodslist'
+    managed = False
+    db_table = 'goodslist'
 
 
 class PremiseType(models.Model):
@@ -347,6 +351,9 @@ class Products(models.Model):
         managed = False
         db_table = 'products'
 
+    def get_absolute_url(self):
+        return reverse('details', kwargs={'product_id': self.pk})
+
 
 class Region(models.Model):
     region_id = models.IntegerField(primary_key=True)
@@ -376,8 +383,6 @@ class Supplier_Order(models.Model):
     class Meta:
         managed = False
         db_table = 'supplier_order'
-
-
 
 
 class Supplier_Routes(models.Model):

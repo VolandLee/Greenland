@@ -11,12 +11,11 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import django
 
-
 from django.contrib.auth import get_user_model
+
 LOGIN_REDIRECT_URL = 'home'
 from pathlib import Path
 from django.forms.renderers import TemplatesSetting
-
 
 """
 class CustomFormRenderer(TemplatesSetting):
@@ -26,7 +25,6 @@ FORM_RENDERER = "project.settings.CustomFormRenderer"
 """
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -38,7 +36,6 @@ SECRET_KEY = 'django-insecure-cw4_b9=+#n@@bqx)_0p6^wv!7mt*_gs+y5y_(6+bkp=v=1vw_h
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
-
 
 # Application definition
 
@@ -83,26 +80,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Greenland.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-'default': {},
+    'default': {'ENGINE': 'django.db.backends.postgresql',
+
+                'NAME': 'greenland',
+                'USER': 'postgres',
+                'PASSWORD': 'Fok-36A-Drag',
+                'HOST': 'localhost',
+                'PORT': '5432'},
     'root': {
         'ENGINE': 'django.db.backends.postgresql',
 
         'NAME': 'greenland',
         'USER': 'postgres',
-        'PASSWORD': '31520424',
+        'PASSWORD': 'Fok-36A-Drag',
         'HOST': 'localhost',
         'PORT': '5432'
     },
     'goodslist_employyes': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'OPTIONS' : {
-                'options': '-c search_path=supplier'
-            },
+        'ENGINE': 'django.db.backends.postgresql',
+        'OPTIONS': {
+            'options': '-c search_path=supplier'
+        },
         'NAME': 'greenland',
         'USER': 'goodslist_employyes',
         'PASSWORD': '12345678',
@@ -110,10 +112,10 @@ DATABASES = {
         'PORT': '5432'
     },
     'supply_manager': {
-        'ENGINE': 'django.db.backends_psycopg2',
-    'OPTIONS' : {
-                'options': '-c search_path=supplier'
-            },
+        'ENGINE': 'django.db.backends.postgresql',
+        'OPTIONS': {
+            'options': '-c search_path=supplier'
+        },
         'NAME': 'greenland',
         'USER': 'supply_manager',
         'PASSWORD': '12345678',
@@ -121,7 +123,6 @@ DATABASES = {
         'PORT': '5432'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -141,7 +142,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -153,7 +153,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -163,4 +162,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
