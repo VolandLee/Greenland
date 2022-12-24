@@ -85,6 +85,9 @@ WSGI_APPLICATION = 'Greenland.wsgi.application'
 
 DATABASES = {
     'default': {'ENGINE': 'django.db.backends.postgresql',
+                'OPTIONS': {
+                    'options': '-c search_path=supplier'
+                },
 
                 'NAME': 'greenland',
                 'USER': 'postgres',

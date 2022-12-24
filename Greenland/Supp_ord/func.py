@@ -9,13 +9,14 @@ import datetime
 from django.db import connection
 
 
-
-
 def create_supplier_order(kwargs):
     c = connection.cursor()
-    c.callproc('create_supplier_order',(kwargs['supplier_id'],  kwargs['product_id'], kwargs['from_premise'],
-                kwargs['to_premise'], kwargs['start_supplier_route_id'], kwargs['supplier_price'], kwargs['quantity'], kwargs['order_date'], kwargs['sizex'], kwargs['sizey'], kwargs['sizez'], kwargs['wieght']))
-               
+    c.callproc('create_supplier_order', (kwargs['supplier_id'], kwargs['product_id'], kwargs['from_premise'],
+                                         kwargs['to_premise'], kwargs['start_supplier_route_id'],
+                                         kwargs['supplier_price'], kwargs['quantity'], kwargs['order_date'],
+                                         kwargs['sizex'], kwargs['sizey'], kwargs['sizez'], kwargs['wieght']))
+
+
 """
 @transaction.atomic
 def create_order_supplier(goodslist_id, delivery_id, to_premise_id, start_date, quantity, size, weight, **kwargs):
@@ -35,12 +36,7 @@ def create_order_supplier(goodslist_id, delivery_id, to_premise_id, start_date, 
 """
 
 
-
-
-
-
 def create_transfers_supplier_order(start_premise_id, end_premise_id, transfer_id):
-
     if start_premise_id:
         start = Premises.objects.get(premise_id=start_premise_id)
         next = start
@@ -48,7 +44,7 @@ def create_transfers_supplier_order(start_premise_id, end_premise_id, transfer_i
     else:
         Supplier_routes.objects.create(next_point_id=11,
                                        transfer_id=transfer_id, status=0)
-        start = Premises.objects.get(premise_id=11)  #  11 id Главного складв
+        start = Premises.objects.get(premise_id=11)  # 11 id Главного складв
         point = None
         next = start
 
@@ -57,7 +53,6 @@ def create_transfers_supplier_order(start_premise_id, end_premise_id, transfer_i
         flag_forward = True
     else:
         flag_forward = False
-
 
     while next.premise_id != end.premise_id:
         if flag_forward is True:
@@ -122,7 +117,6 @@ def client_routes_update_status(client_order_id, premise_id):
         return True
 
 
-
 def create_routes_client_order(start_premise_id, end_premise_id, client_order_id):
     current = Premises.objects.get(premise_id=start_premise_id)
     end = Premises.objects.get(premise_id=end_premise_id)
@@ -139,7 +133,6 @@ def create_routes_client_order(start_premise_id, end_premise_id, client_order_id
     if current.premise_type_id == 2:
         Client_routes.objects.create(client_order_id=client_order_id, point_id=current.premise_id,
                                      next_point_id=end.premise_id, status=1)
-
 
 
 def supplier_routes_update_status(transfer_id, premise_id):
@@ -168,6 +161,7 @@ def supplier_routes_update_status(transfer_id, premise_id):
         past_premises.save()
         return True
 
+
 def create_routes_supplier_order(supplier_order_id, start_premise_id, end_premise_id):
     current_point = Premises.objects.get(premise_id=start_premise_id)
     next_point = ''
@@ -192,16 +186,10 @@ def create_routes_supplier_order(supplier_order_id, start_premise_id, end_premis
             Client_routes.objects.create(client_order_id=client_order_id, point_id=current.premise_id,
                                          next_point_id=end.premise_id, status=1)
 
-
-
-
         if current_point.premise_type_id == end_point:
-
             Supplier_routes.objects.create(suplier_order_id=supplier_order_id, point_id=start_premise_id,
                                            next_point_id=next_point, status=0)
             current.premise_type_id -= 1
-
-
 
     if current.premise_type_id == 3:
         next = Premises.objects.get(region_id=end.region_id, premise_type_id=3)
@@ -216,9 +204,6 @@ def create_routes_supplier_order(supplier_order_id, start_premise_id, end_premis
     if current.premise_type_id == 2:
         Client_routes.objects.create(client_order_id=client_order_id, point_id=current.premise_id,
                                      next_point_id=end.premise_id, status=1)
-
-
-
 
 
 """
@@ -265,5 +250,3 @@ def find_start_premise_id(barcode_id, quantity, from_premise_id):
         return g[0].premise_id
 
 """
-
-

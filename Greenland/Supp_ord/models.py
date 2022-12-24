@@ -82,6 +82,9 @@ class AuthUser(models.Model):
         managed = False
         db_table = 'auth_user'
 
+    def __str__(self):
+        return f'{self.username}'
+
 
 class AuthUserGroups(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -116,6 +119,9 @@ class Barcodes(models.Model):
         managed = False
         db_table = 'barcodes'
 
+    def __str__(self):
+        return f'{self.catalog}, {self.barcode_name}'
+
 
 class Catalog(models.Model):
     catalog_id = models.IntegerField(primary_key=True)
@@ -125,6 +131,9 @@ class Catalog(models.Model):
     class Meta:
         managed = False
         db_table = 'catalog'
+
+    def __str__(self):
+        return f'{self.catalog_name}'
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'cat_id': self.pk})
@@ -175,7 +184,7 @@ class Client_Routes(models.Model):
 
 
 class Clients(models.Model):
-    client = models.OneToOneField(to=get_user_model(), on_delete=models.DO_NOTHING)
+    client_id = models.AutoField(primary_key=True)
     received_point = models.ForeignKey(to='Premises', on_delete=models.DO_NOTHING)
     phone = models.BigIntegerField()
     postcode = models.IntegerField()
@@ -194,7 +203,7 @@ class Clients(models.Model):
         verbose_name_plural = "Clients"
 
     def __str__(self):
-        return f'id={self.client}'
+        return f'{self.client_id}, {self.city}'
 
 
 class ControlPoints(models.Model):
@@ -306,10 +315,9 @@ class Goodslist(models.Model):
     sizez = models.IntegerField()
     weight = models.DecimalField(max_digits=8, decimal_places=3)
 
-
-class Meta:
-    managed = False
-    db_table = 'goodslist'
+    class Meta:
+        managed = False
+        db_table = 'goodslist'
 
 
 class PremiseType(models.Model):
@@ -350,6 +358,9 @@ class Products(models.Model):
     class Meta:
         managed = False
         db_table = 'products'
+
+    def __str__(self):
+        return f'id={self.product_id}, {self.client_price}'
 
     def get_absolute_url(self):
         return reverse('details', kwargs={'product_id': self.pk})

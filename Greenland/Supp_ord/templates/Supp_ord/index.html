@@ -1,21 +1,36 @@
 {% extends 'Supp_ord/base.html' %}
 {% block content %}
 
+<div class="container">
+<h1>{{ name }}</h1>
+    <h2>{{ barcode }}</h2>
+</div>
+
+
+{% for par in parent %}
+<div class="field"><a href="{{ par.get_absolute_url }}">{{ par }}</a>
+</div>
+{% endfor %}
+
+
 {% for p in products %}
-<div class="field"><a href="#">{{ p.get_absolute_url }}</a>
+<div class="container text-center">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <a  class="lead text-dark" href="{{ p.get_absolute_url }}" style="text-decoration: none">
+                {{ p }} {{ p.barcode.barcode_name }}</a>
+        </div>
+    </div>
 </div>
-{% for i in p %}
-{% if p is empty %}
-
-{% else %}
-
-<div class="field"><a href="{{ i.get_absolute_url }}">{{ i }}</a>
-
-</div>
-{% endif %}
-
-{% endfor %}
 {% endfor %}
 
+{% for ps in parents %}
+<div class="container">
+    <div class="col-lg-6">
+    <a class="lead text-dark" href="{{ ps.get_absolute_url }}" style="text-decoration: none">{{ ps }}
+        {{ ps.barcode.barcode_name }}</a>
+    </div>
+</div>
+{% endfor %}
 
 {% endblock %}
