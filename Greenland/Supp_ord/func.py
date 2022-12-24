@@ -122,16 +122,16 @@ def create_routes_client_order(start_premise_id, end_premise_id, client_order_id
     end = Premises.objects.get(premise_id=end_premise_id)
     if current.premise_type_id == 3:
         next = Premises.objects.get(region_id=end.region_id, premise_type_id=3)
-        Client_routes.objects.create(client_order_id=client_order_id, point_id=start_premise_id,
+        Client_Routes.objects.create(client_order_id=client_order_id, point_id=start_premise_id,
                                      next_point_id=next.premise_id,
                                      status=0)
         current = next
         next = Premises.objects.get(city_id=end.city_id, premise_type_id=2)
-        Client_routes.objects.create(client_order_id=client_order_id, point_id=current.premise_id,
+        Client_Routes.objects.create(client_order_id=client_order_id, point_id=current.premise_id,
                                      next_point_id=next.premise_id, status=0)
         current = next
     if current.premise_type_id == 2:
-        Client_routes.objects.create(client_order_id=client_order_id, point_id=current.premise_id,
+        Client_Routes.objects.create(client_order_id=client_order_id, point_id=current.premise_id,
                                      next_point_id=end.premise_id, status=1)
 
 

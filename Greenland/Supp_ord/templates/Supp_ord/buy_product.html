@@ -6,17 +6,12 @@
 {% endfor %}
 {% endif %}
 <div class="fieldWrapper">
-        {{ product.barcode}}
-    {{ product }}
+    {{ products }}
+</div>
 
-
-    </div>
 <form method="post">
-    <div class="fieldWrapper">{% csrf_token %} {{ form.quantity }}</div>
-
-     <button  type="submit" class="btn btn-success">Купить товар
-</button></form>
-
-
+    <div class="fieldWrapper">{% csrf_token %} {{ form.as_p }}</div>
+    <button  type="submit" class="btn btn-success">Купить товар</button>
+</form>
 
 {% endblock %}

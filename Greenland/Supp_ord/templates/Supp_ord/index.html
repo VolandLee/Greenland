@@ -1,36 +1,48 @@
 {% extends 'Supp_ord/base.html' %}
 {% block content %}
 
-<div class="container">
-<h1>{{ name }}</h1>
-    <h2>{{ barcode }}</h2>
-</div>
-
+<h3>{{ name }}</h3>
 
 {% for par in parent %}
 <div class="field"><a href="{{ par.get_absolute_url }}">{{ par }}</a>
 </div>
 {% endfor %}
 
-
+<div class="container my-2">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
 {% for p in products %}
-<div class="container text-center">
-    <div class="row">
-        <div class="col-lg-6 mx-auto">
-            <a  class="lead text-dark" href="{{ p.get_absolute_url }}" style="text-decoration: none">
-                {{ p }} {{ p.barcode.barcode_name }}</a>
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+              <img src="https://picsum.photos/id/21/300" class="card-img-top" alt="Картинка">
+              <div class="card-body">
+                <h5 class="card-title">{{ p.barcode.barcode_name }}</h5>
+                <a  class="lead text-dark" href="{{ p.get_absolute_url }}" style="text-decoration: none">
+                            {{ p.client_price }} ₽</a>
+                <p><a href="#" class="btn btn-primary my-3">Go somewhere</a></p>
+              </div>
+            </div>
         </div>
+{% endfor %}
     </div>
 </div>
-{% endfor %}
+
+<div class="container my-2">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
 
 {% for ps in parents %}
-<div class="container">
-    <div class="col-lg-6">
-    <a class="lead text-dark" href="{{ ps.get_absolute_url }}" style="text-decoration: none">{{ ps }}
-        {{ ps.barcode.barcode_name }}</a>
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+              <img src="https://picsum.photos/id/21/300" class="card-img-top" alt="Картинка">
+              <div class="card-body">
+                <h5 class="card-title">{{ ps.barcode.barcode_name }}</h5>
+                <a  class="lead text-dark" href="{{ ps.get_absolute_url }}" style="text-decoration: none">
+                            {{ ps.client_price }} ₽</a>
+                <p><a href="#" class="btn btn-primary my-3">Go somewhere</a></p>
+              </div>
+            </div>
+        </div>
+{% endfor %}
     </div>
 </div>
-{% endfor %}
 
 {% endblock %}

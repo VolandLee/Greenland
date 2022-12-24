@@ -1,5 +1,9 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from .utils import *
 from .models import *
 from .forms import *
 from django.db import connection
@@ -16,7 +20,6 @@ from django.contrib.auth.models import User
 menu = [{'title': "На главную", 'url_name': 'home'},
         {'title': "Профиль", 'url_name': 'profile'},
         {'title': "Выйти из профиля", 'url_name': 'logout'},
-        {'title': "Войти", 'url_name': 'login'}
         ]
 
 
@@ -111,9 +114,10 @@ def product_details(request, product_id):
 def buy_product(request, product_id):
     try:
         goodslist = Goodslist.objects.get(product=product_id)
+        products = Products.objects.get(product_id=product_id)
     except ObjectDoesNotExist:
         messages.error(request, "Продукт не найден")
-        return render(request, template_name='Supp_ord/buy_product.html')
+        return render(request, template_name='Supp_ord/buy_product.html', context={})
     if request.method == 'POST':
         form = BuyProduct(request.POST)
         if form.is_valid():
@@ -121,24 +125,25 @@ def buy_product(request, product_id):
             form_kwargs = {el.name: int(el.value()) for el in form}
             quantity = form_kwargs['quantity']
             from_premise_id = goodslist.premise_id
-            if quantity <= product.quantity:
-                product.goodslist.quantity -= quantity
-                product.quantity -= quantity
-                product.save()
-                product.goodslist.save()
+            if quantity <= goodslist.product.quantity:
+                goodslist.product.quantity -= quantity
+                goodslist.quantity -= quantity
+                goodslist.product.save()
+                goodslist.save()
                 current_user_id = request.user.id
                 current_client = Clients.objects.get(client_id=current_user_id)
-                total_cost = product.client_price * quantity
+                total_cost = goodslist.product.client_price * quantity
                 if current_client.balance < total_cost:
                     messages.error(request, "Недостаточно средств")
                     return render(request, template_name='Supp_ord/buy_product.html')
                 current_client.balance -= total_cost
                 current_client.save()
                 user_received_point = current_client.received_point_id
-                client_order = Client_Order.objects.create(client_id=current_user_id, product_id=product_id,
+                client_order = Client_Order.objects.create(client_order_id=4, client_id=current_user_id,
+                                                           product_id=product_id,
                                                            from_premise_id=from_premise_id,
                                                            to_premise_id=user_received_point,
-                                                           client_price=product.client_price, quantity=quantity,
+                                                           client_price=goodslist.product.client_price,
                                                            order_date=datetime.datetime.now())
                 print(from_premise_id, user_received_point, client_order.client_order_id)
                 create_routes_client_order(start_premise_id=from_premise_id, end_premise_id=user_received_point,
@@ -149,9 +154,9 @@ def buy_product(request, product_id):
                 else:
                     ValueError('На складе не соталось столько товар. Пожалкуйста уменьшите количество')
     else:
-        form = BuyProduct
+        form = BuyProduct()
 
-    context = {'form': form, 'product': product, 'menu': menu}
+    context = {'form': form, 'products': products, 'menu': menu}
 
     return render(request, template_name='Supp_ord/buy_product.html', context=context)
 
@@ -221,7 +226,7 @@ def routes_update_status(request):
         if form.is_valid():
             form_kwargs = {el.name: int(el.value()) for el in form}
             if client_routes_update_status(form_kwargs['client_order_id'], form_kwargs['premise_id']):
-                Client_order.objects.get(form_kwargs['client_order_id']).update(delivery_date=datetime.datetime.now())
+                Client_Order.objects.get(form_kwargs['client_order_id']).update(delivery_date=datetime.datetime.now())
                 # здесь надо отправить email пользователю, что посылка прибыла и ожидает получения
         else:
             messages.error(request, 'Введите корректные значения!')
@@ -230,3 +235,9 @@ def routes_update_status(request):
         form = AddProduct
         return render(request, template_name='Supp_ord/add_product.html',
                       context={'form': form, 'tittle': 'Обновления статуса доставки'})
+
+
+class RegisterUser(DataMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'Supp_ord/register.html'
+    success_url = reverse_lazy('login')

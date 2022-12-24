@@ -319,6 +319,9 @@ class Goodslist(models.Model):
         managed = False
         db_table = 'goodslist'
 
+    def __str__(self):
+        return f'id={self.goodslist_id}, {self.product}, {self.premise}, {self.quantity}'
+
 
 class PremiseType(models.Model):
     premise_type_id = models.IntegerField(primary_key=True)
@@ -360,7 +363,7 @@ class Products(models.Model):
         db_table = 'products'
 
     def __str__(self):
-        return f'id={self.product_id}, {self.client_price}'
+        return f'{self.client_price}, {self.quantity}'
 
     def get_absolute_url(self):
         return reverse('details', kwargs={'product_id': self.pk})
