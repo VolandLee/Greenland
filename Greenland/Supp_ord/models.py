@@ -149,7 +149,7 @@ class City(models.Model):
 
 
 class Client_Order(models.Model):
-    client_order_id = models.IntegerField(primary_key=True)
+    client_order_id = models.AutoField(primary_key=True)
     client = models.ForeignKey('Clients', models.DO_NOTHING)
     product = models.ForeignKey('Products', models.DO_NOTHING)
     from_premise = models.ForeignKey('Premises', models.DO_NOTHING, related_name='from_premise_co')

@@ -139,15 +139,13 @@ def buy_product(request, product_id):
                 current_client.balance -= total_cost
                 current_client.save()
                 user_received_point = current_client.received_point_id
-                client_order = Client_Order.objects.create(client_order_id=4, client_id=current_user_id,
+                client_order = Client_Order.objects.create(client_id=current_user_id,
                                                            product_id=product_id,
                                                            from_premise_id=from_premise_id,
                                                            to_premise_id=user_received_point,
                                                            client_price=goodslist.product.client_price,
                                                            order_date=datetime.datetime.now())
                 print(from_premise_id, user_received_point, client_order.client_order_id)
-                create_routes_client_order(start_premise_id=from_premise_id, end_premise_id=user_received_point,
-                                           client_order_id=client_order.client_order_id)
             else:
                 if quantity == 1:
                     ValueError('Товар закончился')
@@ -241,3 +239,6 @@ class RegisterUser(DataMixin, CreateView):
     form_class = RegisterUserForm
     template_name = 'Supp_ord/register.html'
     success_url = reverse_lazy('login')
+
+
+
