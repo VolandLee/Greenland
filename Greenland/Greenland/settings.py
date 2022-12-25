@@ -85,13 +85,14 @@ WSGI_APPLICATION = 'Greenland.wsgi.application'
 
 DATABASES = {
     'default': {'ENGINE': 'django.db.backends.postgresql',
+
                 'OPTIONS': {
                     'options': '-c search_path=supplier'
                 },
 
-                'NAME': 'greenland',
-                'USER': 'postgres',
-                'PASSWORD': 'Fok-36A-Drag',
+                'NAME': 'ff',
+                'USER': 'guest',
+                'PASSWORD': '1',
                 'HOST': 'localhost',
                 'PORT': '5432'},
     'root': {
