@@ -1,0 +1,56 @@
+add_supplier_f_id - возвращает id добавленного поставщика
+select * from add_supplier_f_id('test', '666', '666', '666', '10', '10', '10', '10', '10')
+
+
+add_barcode_f_id - возвращает id добавленного штрихкода
+select * from add_barcode_f_id(2, 4, 'test', 'test')
+
+
+add_goodslist_f_id - возвращает id добавленного товара
+select * from add_barcode_f_id(2, 4, 'test', 'test')
+
+
+add_product_f_3val - возвращает таблицу: id добавленного продукта, его закупочную цену и количество
+select * from add_product_f_3val(1, 4, 4, 4)
+
+
+create_supplier_order_f_id - возвращает id добавленного заказа на поставку товара.
+select * from create_supplier_order_f_id(1, 1, 7, 8, 333, 33, 32, 32, 32, 32)
+
+
+add_supplier_route_f_id - возвращает id добавленного маршрута, также функция прикрепляет к supplier_order.current_route_id = id добавленного заказа, если это первый трансфер в цепочки
+
+
+
+
+accept_goodslist - процедура принимает товар на складе. Если товар дошёл до конечной точки 
+supplier_order.from_premise = supplier_routes.next_point_id, до добавляет время доставки supplier_order.delivery_date = now()
+в таблице  supplier_routes set end_date = now(), status=3 ,goodslist_id = номер товара на складе.
+
+
+add_premise - процедура добавляет новую точку.
+
+
+send_goodslist -  процедура отправляет товар со склада. Также меняет статус на 2, устанавливает start_date = now()
+и меняет supplier_order.current_supplier_route_id = на новый supplier_route_id
+
+
+
+
+status
+0 - добавлен
+
+2 - в пути
+3 - завершён
+
+
+
+для server - поднимает сервер
+
+
+revoke create on schema django from server;
+
+grant create on schema django to server;
+grant usage on schema django to server;
+ALTER ROLE server SET SEARCH_PATH TO django;
+grant all PRIVILEGES on auth_group, auth_group_permissions, auth_permission, django_session, django_migrations, django_content_type, django_admin_log, auth_user_user_permissions, auth_user_groups, auth_user, auth_permission to server;
