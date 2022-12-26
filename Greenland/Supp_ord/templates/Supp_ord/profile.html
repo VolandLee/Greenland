@@ -1,5 +1,36 @@
 {% extends 'Supp_ord/base.html' %}
 {% block content %}
 <h1>{{ user }}</h1>
-{{ client_data }}
+<a  class="lead text-dark" href="{% url 'myorders' %}" style="text-decoration: none">
+                            Мои заказы</a>
+<div class="main-detail">
+            <h1 class="main-details-title"></h1>
+            <p>Адрес: {{ client_data.city.city_name }}, {{ client_data.street }}</p>
+            <p>Телефон: {{ client_data.phone }}</p>
+            <p>Email: {{ client_data.phone }}</p>
+</div>
+
+<div class="container my-2">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+{% for o in order_data %}
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+              <img src="https://picsum.photos/id/21/300" class="card-img-top" alt="Картинка">
+              <div class="card-body">
+                <h5 class="card-title">{{ o.product.barcode.barcode_name }}</h5>
+                <a  class="lead text-dark" style="font-size: 15px;" href="{{ o.product.get_absolute_url }}" style="text-decoration: none;">
+                           Заказ: {{ o.order_date }}</a>
+                <a  class="lead text-dark" style="font-size: 15px;" href="{{ o.get_absolute_url }}" style="text-decoration: none;">
+                           Сумма заказа: {{ o.client_price }} ₽</a>
+                {% if o.delivery_date is not empty %}
+                    <p><a  class="lead text-dark" href="{{ o.get_absolute_url }}" style="text-decoration: none;">
+                           Получение: {{ o.delivery_date }}</a></p>
+                {% endif %}
+                <p><a href="#" class="btn btn-primary my-3">Go somewhere</a></p>
+              </div>
+            </div>
+        </div>
+{% endfor %}
+    </div>
+</div>
 {% endblock %}

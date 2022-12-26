@@ -26,16 +26,38 @@ class BuyProduct(forms.Form):
     quantity = forms.IntegerField(label='Выберите количество товара')
 
 
-class AddBarcode(ModelForm):
-    class Meta:
-        model = Barcodes
-        fields = ['barcode_id', 'catalog', 'supplier', 'barcode_name', 'country']
+class AddBarcode(forms.Form):
+    barcode_id = forms.IntegerField(label='Штрихкод', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    catalog = forms.IntegerField(label='Каталог', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    barcode_name = forms.CharField(label='Название', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    country = forms.CharField(label='Страна производитель', widget=forms.TextInput(attrs={'class': 'form-input'}))
 
 
-class AddProduct(ModelForm):
+class AddProduct(forms.Form):
+    supplier_price = forms.DecimalField(label='Закупочная цена', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    client_price = forms.DecimalField(label='Цена для клиента', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    quantity = forms.IntegerField(label='Количество', widget=forms.TextInput(attrs={'class': 'form-input'}))
+
+
+class AddGoods(ModelForm):
     class Meta:
-        model = Products
-        fields = ['barcode', 'supplier_price', 'client_price', 'quantity', 'available']
+        model = Goodslist
+        fields = ['product', 'premise', 'quantity', 'sizex', 'sizey',
+                  'sizez', 'weight']
+
+
+class AddSuppRoutes(ModelForm):
+    class Meta:
+        model = Supplier_Routes
+        fields = ['parent', 'delivery', 'goodslist', 'point', 'next_point',
+                  'start_date', 'end_date', 'status']
+
+
+class AddPremise(ModelForm):
+    class Meta:
+        model = Premises
+        fields = ['premise_type', 'coord_long', 'coord_lat', 'email', 'phone',
+                  'postcode', 'region', 'city', 'street', 'h_number']
 
 
 class CreateSupplierOrder(forms.Form):
@@ -50,6 +72,26 @@ class UpdateRoute(forms.Form):
     premise_id = forms.IntegerField(label="Номер склада прибытие")
 
 
+class SuppOrdDet(forms.Form):
+    supplier = forms.IntegerField(label='Поставщик', required=False,
+                                  widget=forms.TextInput(attrs={'class': 'form-input'}))
+    barcode = forms.IntegerField(label='Штрихкод', required=False,
+                                 widget=forms.TextInput(attrs={'class': 'form-input'}))
+    product = forms.IntegerField(label='Продукт', required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    from_premise = forms.IntegerField(label='Склад поставщика', required=False,
+                                      widget=forms.TextInput(attrs={'class': 'form-input'}))
+    to_premise = forms.IntegerField(label='Склад доставки',
+                                    widget=forms.TextInput(attrs={'class': 'form-input'}))
+    sx = forms.IntegerField(label='Длина в мм',
+                            widget=forms.TextInput(attrs={'class': 'form-input'}))
+    sy = forms.IntegerField(label='Ширина в мм',
+                            widget=forms.TextInput(attrs={'class': 'form-input'}))
+    sz = forms.IntegerField(label='Высота в мм',
+                            widget=forms.TextInput(attrs={'class': 'form-input'}))
+    w = forms.DecimalField(label='Масса',
+                           widget=forms.TextInput(attrs={'class': 'form-input'}))
+
+
 class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
     email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
@@ -59,4 +101,3 @@ class RegisterUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
-

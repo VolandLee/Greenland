@@ -167,6 +167,9 @@ class Client_Order(models.Model):
         managed = False
         db_table = 'client_order'
 
+    def __str__(self):
+        return f'{self.client_price}, Заказ: {self.order_date}'
+
 
 class Client_Routes(models.Model):
     client_route_id = models.IntegerField(primary_key=True)

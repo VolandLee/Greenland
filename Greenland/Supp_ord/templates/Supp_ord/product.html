@@ -1,15 +1,31 @@
 {% extends 'Supp_ord/base.html' %}
 {% block content %}
 
+<div class="container">
+    <main class="main">
+        <div class="main-photo">
+            <img src="https://picsum.photos/id/21/300" width="20%" alt="Картинка">
+        </div>
 
-<div class="fieldWrapper">
-        {{ products.barcode}}
-    {{ products }}
+        <div class="main-details">
+            <span class="main-details-vendor">#{{ products.barcode_id }}</span>
+            <h1 class="main-details-title">{{ products.barcode.barcode_name }}</h1>
+            <p>Тип: {{ products.barcode.catalog }}</p>
+            <p>Страна изготовитель: {{ products.barcode.country }}</p>
+
+            <div class="main-details-price">
+                <span class="main-details-price-price">{{ products.client_price }}₽<small>Delivery is free</small></span>
+                <form method="post">{% csrf_token %}
+                    <div class="main-details-price-action"><button style="height:50px;width:150px" type="submit" class="btn btn-success mx-5">Купить товар
+                    </button></div>
+                </form>
+            </div>
+        </div>
 
 
-    </div>
-<form method="post">{% csrf_token %}
-     <button  type="submit" class="btn btn-success">Купить товар
-</button></form>
+    </main>
+</div>
+
+
 
 {% endblock %}
